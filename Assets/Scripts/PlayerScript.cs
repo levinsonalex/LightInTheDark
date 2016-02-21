@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerScript : MonoBehaviour {
 
     public float speed = 5f;
+    public bool nearPedestal = false;
 
 	// Use this for initialization
 	void Start () {
@@ -11,7 +12,7 @@ public class PlayerScript : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb)
         {
@@ -22,4 +23,20 @@ public class PlayerScript : MonoBehaviour {
             rb.velocity = motion;
         }
 	}
+
+    void OnTriggerEnter(Collider coll)
+    {
+        if(coll.tag == "Pedestal")
+        {
+            nearPedestal = true;
+        }
+    }
+
+    void OnTriggerExit(Collider coll)
+    {
+        if(coll.tag == "Pedestal")
+        {
+            nearPedestal = false;
+        }
+    }
 }
