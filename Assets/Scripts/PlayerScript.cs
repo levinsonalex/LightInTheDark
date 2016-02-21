@@ -6,9 +6,17 @@ public class PlayerScript : MonoBehaviour {
     public float speed = 5f;
     public bool nearPedestal = false;
 
+    public static GameObject S;
+
 	// Use this for initialization
 	void Start () {
-
+        if (S)
+        {
+            Debug.Log("Two player objects.");
+        } else
+        {
+            S = gameObject;
+        }
 	}
 	
 	// Update is called once per frame
