@@ -13,13 +13,13 @@ public class PlayerScript : MonoBehaviour {
     private Rigidbody rb;
 
 	public bool hasRedPowerUp;
-	public bool hasYellowPowerUp;
+	public bool hasGreenPowerUp;
 	public bool hasBluePowerUp;
 
 	// Use this for initialization
 	void Start () {
 		hasRedPowerUp = false;
-		hasYellowPowerUp = false;
+		hasGreenPowerUp = false;
 		hasBluePowerUp = false;
         if (S)
         {
@@ -101,6 +101,14 @@ public class PlayerScript : MonoBehaviour {
 		case "RedPowerUp":
 			print ("Player encountered a red power-up!");
 			hasRedPowerUp = true;
+			break;
+		case "GreenPowerUp":
+			print ("Player encountered a green power-up!");
+			hasGreenPowerUp = true;
+			break;
+		case "BluePowerUp":
+			print ("Player encountered a blue power-up!");
+			hasBluePowerUp = true;
 			break;
 		default:
 			print ("Unidentified collision");
