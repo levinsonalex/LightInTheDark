@@ -12,8 +12,15 @@ public class PlayerScript : MonoBehaviour {
     public static GameObject S;
     private Rigidbody rb;
 
+	public bool hasRedPowerUp;
+	public bool hasYellowPowerUp;
+	public bool hasBluePowerUp;
+
 	// Use this for initialization
 	void Start () {
+		hasRedPowerUp = false;
+		hasYellowPowerUp = false;
+		hasBluePowerUp = false;
         if (S)
         {
             Debug.Log("Two player objects.");
@@ -87,4 +94,17 @@ public class PlayerScript : MonoBehaviour {
             nearPedestal = null;
         }
     }
+
+	void OnCollisionEnter(Collision coll) {
+		print ("Player on collision function called");
+		switch (coll.collider.tag) {
+		case "RedPowerUp":
+			print ("Player encountered a red power-up!");
+			hasRedPowerUp = true;
+			break;
+		default:
+			print ("Unidentified collision");
+			break;
+		}
+	}
 }
