@@ -23,6 +23,14 @@ public class CameraScript : MonoBehaviour {
         }
 
         transform.Rotate(-mouseY * lookSpeed, mouseX * lookSpeed, 0);
+        if(transform.rotation.y > 45)
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, 45, transform.rotation.eulerAngles.z));
+        }
+        else if(transform.rotation.y < -45)
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, -45, transform.rotation.eulerAngles.z));
+        }
         transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0));
 	}
 }

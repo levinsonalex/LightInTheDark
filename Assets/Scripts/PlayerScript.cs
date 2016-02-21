@@ -18,9 +18,12 @@ public class PlayerScript : MonoBehaviour {
         {
             float forwardMovement = Input.GetAxis("Vertical") * speed;
             float horizontalMovement = Input.GetAxis("Horizontal") * speed;
-
-            Vector3 motion = Camera.main.transform.TransformDirection(new Vector3(horizontalMovement, 0, forwardMovement));
+            GameObject cameraFlat = new GameObject("TEMP");
+            cameraFlat.transform.rotation = Camera.main.gameObject.transform.rotation;
+            cameraFlat.transform.rotation = Quaternion.Euler(0, cameraFlat.transform.rotation.eulerAngles.y, cameraFlat.transform.rotation.eulerAngles.z);
+            Vector3 motion = cameraFlat.transform.TransformDirection(new Vector3(horizontalMovement, rb.velocity.y, forwardMovement));
             rb.velocity = motion;
+            Destroy(cameraFlat);
         }
 	}
 
