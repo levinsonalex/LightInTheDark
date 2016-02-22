@@ -115,7 +115,7 @@ public class PlayerScript : MonoBehaviour {
 			case "RedPowerUp":
 				Debug.Log ("Player encountered a red power-up!");
 				hasRedPowerUp = true;
-				Destroy(gameObject);
+				coll.gameObject.SetActive(false); // Don't destoy; it causes issues.
 				break;
 			case "GreenPowerUp":
 				Debug.Log ("Player encountered a green power-up!");
