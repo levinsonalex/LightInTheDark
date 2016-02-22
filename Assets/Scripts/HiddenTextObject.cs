@@ -7,7 +7,10 @@ public class HiddenTextObject : MonoBehaviour {
 	Transform tfLight;
 	public GameObject pedestalCamGameObject;
 	public GameObject player;
- 
+	public int redMaterialIndex;
+	public int greenMaterialIndex;
+	public int blueMaterialIndex;
+
 	void Start()
 	{
 		// Find the 'Pedestal Camera', the game camera used when
@@ -19,24 +22,58 @@ public class HiddenTextObject : MonoBehaviour {
 		if (!player) {
 			player = GameObject.Find ("PlayerBody");
 		}
+		// Kind of hacky...
+		redMaterialIndex = FindMaterial ("HiddenRedText (Instance)");
+		greenMaterialIndex = FindMaterial ("HiddenGreenText (Instance)");
+		blueMaterialIndex = FindMaterial ("HiddenBlueText (Instance)");
 	}
 
 	void Update()
 	{
 		// If light is pointing at the cube (?)
-		if (tfLight && pedestalCamGameObject.activeSelf
-			&& player.GetComponent<PlayerScript>().hasBluePowerUp)
+		if (tfLight
+			&& pedestalCamGameObject.activeSelf
+			&& player.GetComponent<PlayerScript>().hasRedPowerUp
+			&& redMaterialIndex != -1)
 		{
-			// Updates the first material attached to this object, the hidden material.
-			// Specifically, communicates the light's position and direction to the shader.
-			GetComponent<Renderer>().material.SetVector("_LightPos", tfLight.position);
-			GetComponent<Renderer>().material.SetVector("_LightDir", tfLight.forward);
+			GetComponent<Renderer>().materials[redMaterialIndex].SetVector("_LightPos", tfLight.position);
+			GetComponent<Renderer>().materials[redMaterialIndex].SetVector("_LightDir", tfLight.forward);
 		}
-		else
+		if (tfLight
+			&& pedestalCamGameObject.activeSelf
+			&& player.GetComponent<PlayerScript>().hasGreenPowerUp
+			&& greenMaterialIndex != -1)
+		{
+			GetComponent<Renderer>().materials[greenMaterialIndex].SetVector("_LightPos", tfLight.position);
+			GetComponent<Renderer>().materials[greenMaterialIndex].SetVector("_LightDir", tfLight.forward);
+		}
+		if (tfLight
+			&& pedestalCamGameObject.activeSelf
+			&& player.GetComponent<PlayerScript>().hasBluePowerUp
+			&& blueMaterialIndex != -1)
+		{
+			GetComponent<Renderer>().materials[blueMaterialIndex].SetVector("_LightPos", tfLight.position);
+			GetComponent<Renderer>().materials[blueMaterialIndex].SetVector("_LightDir", tfLight.forward);
+		}
+		// Default
+		if (!tfLight || !pedestalCamGameObject.activeSelf)
 		{
 			GetComponent<Renderer>().material.SetVector("_LightPos", tfLight.position);
 			GetComponent<Renderer>().material.SetVector("_LightDir", Vector3.down);
 		}
+	}
+
+	// Returns true if the object has this material. (May wish to move this elsewhere.)
+	int FindMaterial(string name)
+	{
+		for (int i = 0; i < GetComponent<Renderer>().materials.Length; ++i) {
+			//print ("Compare: " + name + ", " + GetComponent<Renderer>().materials[i].name);
+			if (GetComponent<Renderer>().materials[i].name == name) {
+				print ("Material " + name + " found at index " + i);
+				return i;
+			}
+		}
+		return -1;
 	}
 
 }
