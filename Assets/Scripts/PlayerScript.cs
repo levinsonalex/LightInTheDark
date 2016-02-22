@@ -116,14 +116,17 @@ public class PlayerScript : MonoBehaviour {
 		case "RedPowerUp":
 			print ("Player encountered a red power-up!");
 			hasRedPowerUp = true;
+			coll.gameObject.SetActive(false);
 			break;
 		case "GreenPowerUp":
 			print ("Player encountered a green power-up!");
 			hasGreenPowerUp = true;
+			coll.gameObject.SetActive(false);
 			break;
 		case "BluePowerUp":
 			print ("Player encountered a blue power-up!");
 			hasBluePowerUp = true;
+			coll.gameObject.SetActive(false);
 			break;
 		default:
 			print ("Unidentified collision: " + coll.collider.tag);
