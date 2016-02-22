@@ -122,19 +122,19 @@ public class PlayerScript : MonoBehaviour {
 	void OnCollisionEnter(Collision coll) {
 		switch (coll.collider.tag) {
 			case "RedPowerUp":
-				audiosrc.PlayOneShot (powerupsound, 1.5f);
+				audiosrc.PlayOneShot (powerupsound, 3f);
 				Debug.Log ("Player encountered a red power-up!");
 				hasRedPowerUp = true;
 				coll.gameObject.SetActive(false); // Don't destoy; it causes issues.
 				break;
 			case "GreenPowerUp":
-				audiosrc.PlayOneShot (powerupsound, 1.5f);
+				audiosrc.PlayOneShot (powerupsound, 3f);
 				Debug.Log ("Player encountered a green power-up!");
 				hasGreenPowerUp = true;
 				coll.gameObject.SetActive(false);
 				break;
 			case "BluePowerUp":
-				audiosrc.PlayOneShot (powerupsound, 1.5f);
+				audiosrc.PlayOneShot (powerupsound, 3f);
 				Debug.Log ("Player encountered a blue power-up!");
 				hasBluePowerUp = true;
 				coll.gameObject.SetActive(false);
