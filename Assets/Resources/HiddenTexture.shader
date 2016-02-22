@@ -4,8 +4,8 @@ Shader "Custom/Hidden Texture" {
      _SpotAngle ("Spot Angle", Float) = 30.0
      _Range ("Range", Float) = 1000.0
      _Contrast ("Contrast", Range (20.0, 80.0)) = 50.0
- } 
- 
+ }
+
  Subshader {
      Tags {"RenderType"="Transparent" "Queue"="Transparent"}
      Pass {
@@ -23,12 +23,14 @@ Shader "Custom/Hidden Texture" {
          uniform float _SpotAngle; 
          uniform float _Range;
          uniform float _Contrast;
+		 uniform float4 _MainTex_ST;
          
          struct v2f_interpolated {
              float4 pos : SV_POSITION;
              float2 texCoord : TEXCOORD0;
              float3 lightDir : TEXCOORD1;     
          };    
+
  
          v2f_interpolated vert(appdata_full v){
              v2f_interpolated o;
@@ -36,7 +38,7 @@ Shader "Custom/Hidden Texture" {
              o.pos = mul(UNITY_MATRIX_MVP,  v.vertex);
              half3 worldSpaceVertex = mul(_Object2World, v.vertex).xyz;
              // calculate light direction to vertex    
-             o.lightDir = worldSpaceVertex-_LightPos.xyz;
+			 o.lightDir = worldSpaceVertex - _LightPos.xyz;
              return o;
          }
  

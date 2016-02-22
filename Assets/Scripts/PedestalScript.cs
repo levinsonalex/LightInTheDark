@@ -13,7 +13,7 @@ public class PedestalScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Vector3.Distance(PlayerScript.S.transform.position, transform.position) < 10 && PlayerScript.S.GetComponent<PlayerScript>().nearPedestal)
+        if (Vector3.Distance(PlayerScript.S.transform.position, transform.position) < 10 && PlayerScript.S.GetComponent<PlayerScript>().nearPedestal && !PlayerScript.S.GetComponent<PlayerScript>().droppedEye)
         {
             if (AB)
             {
