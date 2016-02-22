@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 //http://answers.unity3d.com/questions/283086/headbobber-script-in-c.html
 
