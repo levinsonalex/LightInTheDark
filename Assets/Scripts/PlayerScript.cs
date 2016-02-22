@@ -111,26 +111,28 @@ public class PlayerScript : MonoBehaviour {
     }
 
 	void OnCollisionEnter(Collision coll) {
-		print ("Player on collision function called");
 		switch (coll.collider.tag) {
-		case "RedPowerUp":
-			print ("Player encountered a red power-up!");
-			hasRedPowerUp = true;
-			coll.gameObject.SetActive(false);
-			break;
-		case "GreenPowerUp":
-			print ("Player encountered a green power-up!");
-			hasGreenPowerUp = true;
-			coll.gameObject.SetActive(false);
-			break;
-		case "BluePowerUp":
-			print ("Player encountered a blue power-up!");
-			hasBluePowerUp = true;
-			coll.gameObject.SetActive(false);
-			break;
-		default:
-			print ("Unidentified collision: " + coll.collider.tag);
-			break;
+			case "RedPowerUp":
+				Debug.Log ("Player encountered a red power-up!");
+				hasRedPowerUp = true;
+				Destroy(gameObject);
+				break;
+			case "GreenPowerUp":
+				Debug.Log ("Player encountered a green power-up!");
+				hasGreenPowerUp = true;
+				coll.gameObject.SetActive(false);
+				break;
+			case "BluePowerUp":
+				Debug.Log ("Player encountered a blue power-up!");
+				hasBluePowerUp = true;
+				coll.gameObject.SetActive(false);
+				break;
+			default:
+				if (coll.collider.tag != "Untagged")
+				{
+					Debug.Log("Unidentified collision: " + coll.collider.tag);
+				}
+				break;
 		}
 	}
 }
