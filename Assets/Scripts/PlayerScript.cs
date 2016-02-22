@@ -16,11 +16,18 @@ public class PlayerScript : MonoBehaviour {
 	public bool hasGreenPowerUp;
 	public bool hasBluePowerUp;
 
+	public AudioClip powerupsound;
+	AudioSource audiosrc;
+
 	// Use this for initialization
 	void Start () {
 		hasRedPowerUp = false;
 		hasGreenPowerUp = false;
 		hasBluePowerUp = false;
+
+		// Audio
+		audiosrc = GetComponents<AudioSource>()[1];
+
         if (S)
         {
             Debug.Log("Two player objects.");
@@ -113,16 +120,19 @@ public class PlayerScript : MonoBehaviour {
 	void OnCollisionEnter(Collision coll) {
 		switch (coll.collider.tag) {
 			case "RedPowerUp":
+				audiosrc.PlayOneShot (powerupsound, 1f);
 				Debug.Log ("Player encountered a red power-up!");
 				hasRedPowerUp = true;
 				coll.gameObject.SetActive(false); // Don't destoy; it causes issues.
 				break;
 			case "GreenPowerUp":
+				audiosrc.PlayOneShot (powerupsound, 1f);
 				Debug.Log ("Player encountered a green power-up!");
 				hasGreenPowerUp = true;
 				coll.gameObject.SetActive(false);
 				break;
 			case "BluePowerUp":
+				audiosrc.PlayOneShot (powerupsound, 1f);
 				Debug.Log ("Player encountered a blue power-up!");
 				hasBluePowerUp = true;
 				coll.gameObject.SetActive(false);
