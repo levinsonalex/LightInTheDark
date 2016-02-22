@@ -1,3 +1,4 @@
+// See http://answers.unity3d.com/questions/381183/two-textures-on-one-surface.html
 Shader "Custom/Hidden Texture" { 
  Properties {
      _MainTex ("Base (RGB)", 2D) = "white" { }
