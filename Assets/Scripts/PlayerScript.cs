@@ -126,7 +126,7 @@ public class PlayerScript : MonoBehaviour {
 			hasBluePowerUp = true;
 			break;
 		default:
-			print ("Unidentified collision");
+			print ("Unidentified collision: " + coll.collider.tag);
 			break;
 		}
 	}
