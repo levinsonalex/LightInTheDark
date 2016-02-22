@@ -32,12 +32,11 @@ public class HiddenTextObject : MonoBehaviour {
 	{
 		// If light is pointing at the cube (?)
 		if (tfLight
-			&& pedestalCamGameObject.activeSelf
-			&& player.GetComponent<PlayerScript>().hasRedPowerUp
-			&& redMaterialIndex != -1)
-		{
-			GetComponent<Renderer>().materials[redMaterialIndex].SetVector("_LightPos", tfLight.position);
-			GetComponent<Renderer>().materials[redMaterialIndex].SetVector("_LightDir", tfLight.forward);
+		    && pedestalCamGameObject.activeSelf
+			&& player.GetComponent<PlayerScript> ().hasRedPowerUp
+			&& redMaterialIndex != -1) {
+			GetComponent<Renderer> ().materials [redMaterialIndex].SetVector ("_LightPos", tfLight.position);
+			GetComponent<Renderer> ().materials [redMaterialIndex].SetVector ("_LightDir", tfLight.forward);
 		}
 		if (tfLight
 			&& pedestalCamGameObject.activeSelf
@@ -58,8 +57,12 @@ public class HiddenTextObject : MonoBehaviour {
 		// Default
 		if (!tfLight || !pedestalCamGameObject.activeSelf)
 		{
-			GetComponent<Renderer>().material.SetVector("_LightPos", tfLight.position);
-			GetComponent<Renderer>().material.SetVector("_LightDir", Vector3.down);
+			// Assumes default material is first in array
+			for (int i = 0; i < GetComponent<Renderer> ().materials.Length-1; ++i) {
+				print (GetComponent<Renderer> ().materials [i].name);
+				GetComponent<Renderer>().materials[i].SetVector("_LightPos", tfLight.position);
+				GetComponent<Renderer>().materials[i].SetVector("_LightDir", Vector3.down);
+			}
 		}
 	}
 
