@@ -35,6 +35,7 @@ public class CameraBobScript : MonoBehaviour
             transform.localPosition = newPosition;
         }
 
+
         if (timer > Mathf.PI * 2) //completed a full cycle on the unit circle. Reset to 0 to avoid bloated values.
             timer = 0;
     }

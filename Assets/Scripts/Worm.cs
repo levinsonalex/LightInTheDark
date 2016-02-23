@@ -14,15 +14,21 @@ public class Worm : MonoBehaviour {
     public List<GameObject> bodyParts;
 
     public float groundSpeed = 8;
-    public float airSpeed = 6;
-    public float frequencyMult = 1;
+    public float airSpeed;
+    public float frequencyMult;
     public float a = 0;
     public float aTo = 0;
+    public float aSin = 0;
+
+    private float yGround;
+    public bool underground {  get { return transform.position.y < yGround; } }
+    private bool undergroundLast = false;
 
     public List<Vector3> positions;
 
 	// Use this for initialization
 	void Start () {
+        yGround = 0;/// transform.position.y;
         foreach (Transform t0 in transform)
         {
             if (t0.name == "Head")
@@ -57,6 +63,7 @@ public class Worm : MonoBehaviour {
 
         aTo = Mathf.Atan2(PlayerScript.S.transform.position.z - transform.position.z, PlayerScript.S.transform.position.x - transform.position.x);
         a += Utils.angleDiff(a, aTo) * 0.005f;
+        //aSin += underground ? 0.1f * Mathf.Sin(Time.time) : 0;
 
 	    for(int i = 0; i < mandibles.Count; i++)
         {
@@ -64,10 +71,21 @@ public class Worm : MonoBehaviour {
             mandibles[i].transform.localEulerAngles = new Vector3((mandibleAngleMin + (mandibleAngleMax - mandibleAngleMin) * nsin + 360) % 360, mandibles[i].transform.localEulerAngles.y, mandibles[i].transform.localEulerAngles.z);
         }
 
+        var screenShakeTriggerY = 5 * transform.localScale.x;
+        var screenShakeDistanceMax = 1000;
+        if (transform.position.y < screenShakeTriggerY && positions.Count > 0 && positions[positions.Count-1].y >= screenShakeTriggerY)
+        {
+            var _n = Mathf.Max(0, 1 - (transform.position - PlayerScript.S.transform.position).magnitude / screenShakeDistanceMax);
+            var _t = _n * _n * 2;
+            ScreenShake.Shake(_t);
+        }
+        Debug.Log("Under: " + underground);
+
+        rb.useGravity = !underground;
         rb.velocity = new Vector3(
-            Mathf.Cos(a) * groundSpeed,
-            Mathf.Cos(Time.time * frequencyMult) * airSpeed,
-            Mathf.Sin(a) * groundSpeed
+            Mathf.Cos(a + aSin) * groundSpeed,
+            Mathf.Cos(Time.time * frequencyMult) * airSpeed,//underground ? rb.velocity.y + airSpeed : 0,//
+            Mathf.Sin(a + aSin) * groundSpeed
         );
         positions.Add(transform.position);
 
@@ -88,6 +106,8 @@ public class Worm : MonoBehaviour {
             var o = (i + 1) % positions.Count;
             Debug.DrawLine(positions[i], positions[o]);
         }*/
+
+        undergroundLast = underground;
     }
 
     float Filter(float t)

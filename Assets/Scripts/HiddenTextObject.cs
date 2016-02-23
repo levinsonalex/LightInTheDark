@@ -1,4 +1,4 @@
-﻿// See http://answers.unity3d.com/questions/381183/two-textures-on-one-surface.html
+// See http://answers.unity3d.com/questions/381183/two-textures-on-one-surface.html
 using UnityEngine;
 using System.Collections;
 
@@ -59,7 +59,7 @@ public class HiddenTextObject : MonoBehaviour {
 		{
 			// Assumes default material is first in array
 			for (int i = 0; i < GetComponent<Renderer> ().materials.Length-1; ++i) {
-				print (GetComponent<Renderer> ().materials [i].name);
+				//print (GetComponent<Renderer> ().materials [i].name);
 				GetComponent<Renderer>().materials[i].SetVector("_LightPos", tfLight.position);
 				GetComponent<Renderer>().materials[i].SetVector("_LightDir", Vector3.down);
 			}
