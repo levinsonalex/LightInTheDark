@@ -22,10 +22,6 @@ public class HiddenTextObject : MonoBehaviour {
 		if (!player) {
 			player = GameObject.Find ("PlayerBody");
 		}
-		// Kind of hacky...
-		redMaterialIndex = FindMaterial ("HiddenRedText (Instance)");
-		greenMaterialIndex = FindMaterial ("HiddenGreenText (Instance)");
-		blueMaterialIndex = FindMaterial ("HiddenBlueText (Instance)");
 	}
 
 	void Update()
