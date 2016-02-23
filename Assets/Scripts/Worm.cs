@@ -30,7 +30,7 @@ public class Worm : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        a = aTo = transform.localEulerAngles.y;
+        a = aTo = Mathf.PI;// transform.localEulerAngles.y;
         yGround = 0;/// transform.position.y;
         foreach (Transform t0 in transform)
         {
