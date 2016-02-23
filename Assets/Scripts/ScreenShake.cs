@@ -16,9 +16,9 @@ public class ScreenShake : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update ()
+	void LateUpdate ()
     {
-        Camera.main.transform.position -= diff;
+        Camera.main.transform.localPosition -= diff;
 
         if (shakeTimer > 0)
         {
@@ -28,11 +28,13 @@ public class ScreenShake : MonoBehaviour {
         else
             diff = Vector3.zero;
 
-        Camera.main.transform.position += diff;
+        Camera.main.transform.localPosition += diff;
     }
 
     public static void Shake(float t)
     {
         S.shakeTimer = t;
     }
+
+    public static Vector3 CameraOffset { get { return S.diff; } }
 }

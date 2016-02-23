@@ -20,6 +20,8 @@ public class Worm : MonoBehaviour {
     public float aTo = 0;
     public float aSin = 0;
 
+    public GameObject target;
+
     private float yGround;
     public bool underground {  get { return transform.position.y < yGround; } }
     private bool undergroundLast = false;
@@ -28,6 +30,7 @@ public class Worm : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        a = aTo = transform.localEulerAngles.y;
         yGround = 0;/// transform.position.y;
         foreach (Transform t0 in transform)
         {
@@ -61,7 +64,8 @@ public class Worm : MonoBehaviour {
             head.transform.Rotate(new Vector3(0, 90, 90));
         }
 
-        aTo = Mathf.Atan2(PlayerScript.S.transform.position.z - transform.position.z, PlayerScript.S.transform.position.x - transform.position.x);
+        var posTo = target.transform.position;// PlayerScript.S.transform.position;
+        aTo = Mathf.Atan2(posTo.z - transform.position.z, posTo.x - transform.position.x);
         a += Utils.angleDiff(a, aTo) * 0.005f;
         //aSin += underground ? 0.1f * Mathf.Sin(Time.time) : 0;
 
@@ -78,8 +82,8 @@ public class Worm : MonoBehaviour {
             var _n = Mathf.Max(0, 1 - (transform.position - PlayerScript.S.transform.position).magnitude / screenShakeDistanceMax);
             var _t = _n * _n * 2;
             ScreenShake.Shake(_t);
+            GetComponent<AudioSource>().Play();
         }
-        Debug.Log("Under: " + underground);
 
         rb.useGravity = !underground;
         rb.velocity = new Vector3(
