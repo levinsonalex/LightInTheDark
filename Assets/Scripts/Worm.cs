@@ -19,6 +19,7 @@ public class Worm : MonoBehaviour {
     public float a = 0;
     public float aTo = 0;
     public float aSin = 0;
+    public float time = 0;
 
     public GameObject target;
 
@@ -55,6 +56,8 @@ public class Worm : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        time += Time.deltaTime;
+
 
         var rb = GetComponent<Rigidbody>();
 
@@ -67,11 +70,11 @@ public class Worm : MonoBehaviour {
         var posTo = target.transform.position;// PlayerScript.S.transform.position;
         aTo = Mathf.Atan2(posTo.z - transform.position.z, posTo.x - transform.position.x);
         a += Utils.angleDiff(a, aTo) * 0.005f;
-        //aSin += underground ? 0.1f * Mathf.Sin(Time.time) : 0;
+        //aSin += underground ? 0.1f * Mathf.Sin(time) : 0;
 
-	    for(int i = 0; i < mandibles.Count; i++)
+        for (int i = 0; i < mandibles.Count; i++)
         {
-            var nsin = (Mathf.Sin(Time.time * 4 + 0.5f * Mathf.Sin(i  % (mandibles.Count / 2)) * 2 * Mathf.PI / (mandibles.Count / 2)) + 1) / 2;
+            var nsin = (Mathf.Sin(time * 4 + 0.5f * Mathf.Sin(i  % (mandibles.Count / 2)) * 2 * Mathf.PI / (mandibles.Count / 2)) + 1) / 2;
             mandibles[i].transform.localEulerAngles = new Vector3((mandibleAngleMin + (mandibleAngleMax - mandibleAngleMin) * nsin + 360) % 360, mandibles[i].transform.localEulerAngles.y, mandibles[i].transform.localEulerAngles.z);
         }
 
@@ -88,7 +91,7 @@ public class Worm : MonoBehaviour {
         rb.useGravity = !underground;
         rb.velocity = new Vector3(
             Mathf.Cos(a + aSin) * groundSpeed,
-            Mathf.Cos(Time.time * frequencyMult) * airSpeed,//underground ? rb.velocity.y + airSpeed : 0,//
+            Mathf.Cos(time * frequencyMult) * airSpeed,//underground ? rb.velocity.y + airSpeed : 0,//
             Mathf.Sin(a + aSin) * groundSpeed
         );
         positions.Add(transform.position);
