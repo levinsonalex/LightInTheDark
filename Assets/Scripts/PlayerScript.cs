@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PlayerScript : MonoBehaviour {
 
     public float speed = 5f;
     public GameObject mainCamera;
+    public GameObject sword;
 
     public GameObject nearPedestal;
     public GameObject droppedEye;
@@ -19,8 +20,21 @@ public class PlayerScript : MonoBehaviour {
 	public AudioClip powerupsound;
 	AudioSource audiosrc;
 
-	// Use this for initialization
-	void Start () {
+    public float swordAngleMin;
+    public float swordAngleMax;
+    public float swordAngleReady;
+    public float swordAngleMultSwing;
+    public float swordAngleMultReturn;
+    public float swordAngleTo;
+    public float swordAngle;
+    public float swordReturnRate = 5;
+    private bool swinging = false;
+    private Vector3 normalLocalRotation;
+
+    // Use this for initialization
+    void Start () {
+        normalLocalRotation = sword.transform.localEulerAngles;
+
 		hasRedPowerUp = false;
 		hasGreenPowerUp = false;
 		hasBluePowerUp = false;
@@ -72,6 +86,8 @@ public class PlayerScript : MonoBehaviour {
         {
             speed /= 2;
         }
+
+        SwordInput();
     }
 	
 	// Update is called once per frame
@@ -105,7 +121,8 @@ public class PlayerScript : MonoBehaviour {
 
     void OnTriggerEnter(Collider coll)
     {
-        if(coll.tag == "Pedestal")
+        Debug.Log("Hit " + coll.gameObject.tag + "!");
+        if (coll.tag == "Pedestal")
         {
             nearPedestal = coll.gameObject;
         }
@@ -146,5 +163,40 @@ public class PlayerScript : MonoBehaviour {
 				}
 				break;
 		}
-	}
+    }
+
+    void SwordInput()
+    {
+        if (Input.GetMouseButtonUp(0))
+        {
+            swinging = true;
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            swordAngleTo = swordAngleReady;
+            var deg = Utils.angleDiffDeg(swordAngle, swordAngleTo);
+            if (deg != 0)
+                swordAngle += deg / 5f;
+        }
+        else if (swinging)
+        {
+            swordAngleTo = swordAngleMax;
+            var deg = Utils.angleDiffDeg(swordAngle, swordAngleTo);
+            swordAngle += deg * swordAngleMultSwing;
+
+            if (Mathf.Abs(deg) < 2)
+                swinging = false;
+        }
+        else
+        {
+            swordAngleTo = swordAngleMin;
+
+            var deg = Utils.angleDiffDeg(swordAngle, swordAngleTo);
+            if (Mathf.Abs(deg) > 20)
+                swordAngle += Utils.sign(deg) * Mathf.Min(Mathf.Abs(deg), swordReturnRate);
+            else
+                swordAngle += Utils.angleDiffDeg(swordAngle, swordAngleTo) * swordAngleMultReturn;
+        }
+        sword.transform.localRotation = Quaternion.Euler(new Vector3(swordAngle, 0, 0) + normalLocalRotation);
+    }
 }

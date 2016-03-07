@@ -67,9 +67,9 @@ public class Worm : MonoBehaviour {
             head.transform.Rotate(new Vector3(0, 90, 90));
         }
 
-        var posTo = target.transform.position;// PlayerScript.S.transform.position;
+        var posTo = target ? target.transform.position : (positions.Count > 0 ? positions[0] : transform.position);// PlayerScript.S.transform.position;
         aTo = Mathf.Atan2(posTo.z - transform.position.z, posTo.x - transform.position.x);
-        a += Utils.angleDiff(a, aTo) * 0.005f;
+        a += Utils.angleDiff(a, aTo) * 0.04f;
         //aSin += underground ? 0.1f * Mathf.Sin(time) : 0;
 
         for (int i = 0; i < mandibles.Count; i++)
