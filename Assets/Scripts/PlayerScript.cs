@@ -28,7 +28,7 @@ public class PlayerScript : MonoBehaviour {
     public float swordAngleTo;
     public float swordAngle;
     public float swordReturnRate = 5;
-    private bool swinging = false;
+    public bool swinging = false;
     private Vector3 normalLocalRotation;
 
     // Use this for initialization
@@ -121,7 +121,7 @@ public class PlayerScript : MonoBehaviour {
 
     void OnTriggerEnter(Collider coll)
     {
-        Debug.Log("Hit " + coll.gameObject.tag + "!");
+        //Debug.Log("Hit " + coll.gameObject.tag + "!");
         if (coll.tag == "Pedestal")
         {
             nearPedestal = coll.gameObject;

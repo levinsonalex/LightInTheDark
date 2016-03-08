@@ -10,14 +10,16 @@ public class Sword : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+	    
 	}
 
     void OnTriggerEnter(Collider c)
     {
         Debug.Log("Hit " + c.gameObject.tag + "!");
-        if (c.gameObject.tag == "Worm")
+        if (c.gameObject.tag == "Worm" && PlayerScript.S.GetComponent<PlayerScript>().swinging)
         {
+            var o = c.transform.parent.GetComponent<Worm>();
+            o.Hit(gameObject);
         }
     }
 }
