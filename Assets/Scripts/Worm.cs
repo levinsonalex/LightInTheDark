@@ -98,10 +98,12 @@ public class Worm : MonoBehaviour {
             
             rb.velocity = new Vector3(
                 Mathf.Cos(a + aSin) * groundSpeed,
-                0,//rb.velocity.y + (underground ? (GetEpicenter(transform.position).Value.point - transform.position).y / 100f : 0),//underground ? rb.velocity.y + airSpeed : 0,//
+                underground ? 0 : rb.velocity.y,//rb.velocity.y + (underground ? (GetEpicenter(transform.position).Value.point - transform.position).y / 100f : 0),//underground ? rb.velocity.y + airSpeed : 0,//
                 Mathf.Sin(a + aSin) * groundSpeed
             );
-            transform.position = GetEpicenter(transform.position).Value.point;
+
+            if(underground)
+                transform.position = GetEpicenter(transform.position).Value.point;
             positions.Add(transform.position);
 
             float startOffset = 0.1f;
