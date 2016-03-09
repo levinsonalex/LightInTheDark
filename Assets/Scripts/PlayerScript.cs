@@ -5,7 +5,10 @@ public class PlayerScript : MonoBehaviour {
 
     public float speed = 5f;
     public GameObject mainCamera;
+
+    public GameObject curWeapon;
     public GameObject sword;
+    public GameObject forceOrb;
 
     public GameObject nearPedestal;
     public GameObject droppedEye;
@@ -87,7 +90,14 @@ public class PlayerScript : MonoBehaviour {
             speed /= 2;
         }
 
-        SwordInput();
+        if (curWeapon == sword)
+        {
+            SwordInput();
+        }
+        else if(curWeapon == forceOrb)
+        {
+            ForceOrbInput();
+        }
     }
 	
 	// Update is called once per frame
@@ -163,6 +173,21 @@ public class PlayerScript : MonoBehaviour {
 				}
 				break;
 		}
+    }
+
+    void ForceOrbInput()
+    {
+        if(Input.GetMouseButton(0))
+        {
+            GameObject[] wormList = GameObject.FindGameObjectsWithTag("Pushable");
+            foreach (GameObject worm in wormList)
+            {
+                if(worm.transform.parent == null && Vector3.Distance(transform.position, worm.transform.position) < 20f)
+                {
+                    worm.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position, 10, 2, ForceMode.Impulse);
+                }
+            }
+        }
     }
 
     void SwordInput()
