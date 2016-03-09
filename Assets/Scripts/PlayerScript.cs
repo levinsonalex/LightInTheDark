@@ -34,6 +34,9 @@ public class PlayerScript : MonoBehaviour {
     public bool swinging = false;
     private Vector3 normalLocalRotation;
 
+    public float forceOrbResetTime = 3f;
+    private float forceOrbCooldownTime;
+
     // Use this for initialization
     void Start () {
         normalLocalRotation = sword.transform.localEulerAngles;
@@ -177,8 +180,14 @@ public class PlayerScript : MonoBehaviour {
 
     void ForceOrbInput()
     {
-        if(Input.GetMouseButton(0))
+        if(Time.time - forceOrbCooldownTime > forceOrbResetTime && Input.GetMouseButton(0))
         {
+            Debug.Log("Explode");
+            forceOrbCooldownTime = Time.time;
+            forceOrb.transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+            //Workaround for weird bug
+            forceOrb.transform.GetChild(0).GetComponent<ParticleSystem>().startLifetime = forceOrb.transform.GetChild(0).GetComponent<ParticleSystem>().startLifetime;
+
             GameObject[] wormList = GameObject.FindGameObjectsWithTag("Pushable");
             foreach (GameObject worm in wormList)
             {
@@ -187,6 +196,10 @@ public class PlayerScript : MonoBehaviour {
                     worm.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position, 10, 2, ForceMode.Impulse);
                 }
             }
+        } 
+        else
+        {
+
         }
     }
 
