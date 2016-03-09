@@ -31,6 +31,9 @@ public class PlayerScript : MonoBehaviour {
     public bool swinging = false;
     private Vector3 normalLocalRotation;
 
+	public Rigidbody bulletPrefab;
+	public Transform bowTransform;
+
     // Use this for initialization
     void Start () {
         normalLocalRotation = sword.transform.localEulerAngles;
@@ -87,7 +90,9 @@ public class PlayerScript : MonoBehaviour {
             speed /= 2;
         }
 
+		// Weapon-related update functions
         SwordInput();
+		BowInput();
     }
 	
 	// Update is called once per frame
@@ -199,4 +204,18 @@ public class PlayerScript : MonoBehaviour {
         }
         sword.transform.localRotation = Quaternion.Euler(new Vector3(swordAngle, 0, 0) + normalLocalRotation);
     }
+
+	void BowInput() {
+		// NOTE: If I attach a BulletPrefab as a child of PlayerBody, it flies up as soon as the game starts.
+		// No idea why this is happening.
+		if (Input.GetMouseButtonUp (0)) {
+			//Transform cam = mainCamera.transform;
+			Debug.Log ("Shooting from bow");
+			// Presumably this also creates the game object
+			Rigidbody bulletInstance;
+			bulletInstance = Instantiate (bulletPrefab, bowTransform.position, Quaternion.identity) as Rigidbody;
+			bulletInstance.GetComponent<Bullet> ().initialPos = bulletInstance.gameObject.transform.position;
+			bulletInstance.velocity = Vector3.forward * 10;
+		}
+	}
 }

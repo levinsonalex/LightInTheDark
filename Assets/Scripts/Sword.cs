@@ -18,8 +18,15 @@ public class Sword : MonoBehaviour {
         Debug.Log("Hit " + c.gameObject.tag + "!");
         if (c.gameObject.tag == "Worm" && PlayerScript.S.GetComponent<PlayerScript>().swinging)
         {
-            var o = c.transform.parent.GetComponent<Worm>();
-            o.Hit(gameObject);
+			Worm o = c.gameObject.GetComponent<Worm>();
+			if (o == null) {
+				// I have no idea what is going on here. The collider clearly has a gameobject
+				// attached with the name "Worm". Each worm gameobject clearly has a "Worm"
+				// script component. And yet, this message will print.
+				Debug.Log ("Somehow the worm object is null");
+			} else {
+				o.Hit (gameObject);
+			}
         }
     }
 }
