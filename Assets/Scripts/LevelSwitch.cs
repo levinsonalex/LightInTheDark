@@ -5,9 +5,12 @@ using UnityEngine.SceneManagement;
 public class LevelSwitch : MonoBehaviour {
 
     // Set in Inspector
-    public string levelname;
+    public string levelName;
+    public int levelIndex;
 
     void OnTriggerEnter(Collider coll) {
-        SceneManager.LoadScene(levelname);
+        SpawnPoints.S.prevRoom = SpawnPoints.S.curRoom;
+        SpawnPoints.S.curRoom = levelIndex;
+        SceneManager.LoadScene(levelName);
     }
 }
