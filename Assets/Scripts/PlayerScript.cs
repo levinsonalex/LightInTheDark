@@ -40,32 +40,42 @@ public class PlayerScript : MonoBehaviour {
     public float forceOrbResetTime = 3f;
     private float forceOrbCooldownTime;
 
+    private bool lockedCursor;
+
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         normalLocalRotation = sword.transform.localEulerAngles;
 
-		hasRedPowerUp = false;
-		hasGreenPowerUp = false;
-		hasBluePowerUp = false;
+        hasRedPowerUp = false;
+        hasGreenPowerUp = false;
+        hasBluePowerUp = false;
 
-		// Audio
-		if (GetComponents<AudioSource> ().Length > 1) {
-			audiosrc = GetComponents<AudioSource> () [1];
-		}
+        // Audio
+        if (GetComponents<AudioSource>().Length > 1)
+        {
+            audiosrc = GetComponents<AudioSource>()[1];
+        }
 
         if (S)
         {
             Debug.Log("Two player objects.");
-        } else
+        }
+        else
         {
             S = gameObject;
         }
 
         rb = GetComponent<Rigidbody>();
-	}
+
+        Screen.lockCursor = lockedCursor = true;
+    }
 
     void Update()
     {
+        if (Input.GetKeyDown("escape"))
+            Screen.lockCursor = lockedCursor = !lockedCursor;
+
         if (Input.GetKeyDown(KeyCode.E) && nearPedestal)
         {
             if (rb)
@@ -185,7 +195,7 @@ public class PlayerScript : MonoBehaviour {
 
     void ForceOrbInput()
     {
-        if(Time.time - forceOrbCooldownTime > forceOrbResetTime && Input.GetMouseButton(0))
+        if(forceOrb && Time.time - forceOrbCooldownTime > forceOrbResetTime && Input.GetMouseButton(0))
         {
             Debug.Log("Explode");
             forceOrbCooldownTime = Time.time;
@@ -246,7 +256,7 @@ public class PlayerScript : MonoBehaviour {
 	void BowInput() {
 		// NOTE: If I attach a BulletPrefab as a child of PlayerBody, it flies up as soon as the game starts.
 		// No idea why this is happening.
-		if (Input.GetMouseButtonUp (0)) {
+		if (bowTransform && Input.GetMouseButtonUp (0)) {
 			//Transform cam = mainCamera.transform;
 			Debug.Log ("Shooting from bow");
 			// Presumably this also creates the game object

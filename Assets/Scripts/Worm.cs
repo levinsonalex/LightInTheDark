@@ -14,7 +14,8 @@ public class Worm : MonoBehaviour {
     public GameObject bodyPartPrefab;
     public List<GameObject> bodyParts;
 
-    public float groundSpeed = 8;
+    public float groundSpeedMax;
+    public float groundSpeed;
     public float airSpeed;
     public float frequencyMult;
     public float a = 0;
@@ -32,9 +33,12 @@ public class Worm : MonoBehaviour {
 
     private float health = 100;
 
+    private float goTimer = 2f;
+
 	// Use this for initialization
 	void Start () {
-        a = aTo = Mathf.PI;// transform.localEulerAngles.y;
+        groundSpeed = 0;
+        a = aTo = Random.value * Mathf.PI * 2;// transform.localEulerAngles.y;
         foreach (Transform t0 in transform)
         {
             if (t0.name == "Head")
@@ -67,16 +71,18 @@ public class Worm : MonoBehaviour {
 
             var rb = GetComponent<Rigidbody>();
 
-            if (rb.velocity.sqrMagnitude > 1)
+            groundSpeed += (groundSpeedMax - groundSpeed) * 0.05f;
+            if (goTimer > 0)
             {
-                head.transform.LookAt(head.transform.position + rb.velocity);
-                head.transform.Rotate(new Vector3(0, 90, 90));
+                goTimer -= Time.deltaTime;
             }
-
-            var posTo = target ? target.transform.position : (positions.Count > 0 ? positions[0] : transform.position);// PlayerScript.S.transform.position;
-            aTo = Mathf.Atan2(posTo.z - transform.position.z, posTo.x - transform.position.x);
-            a += Utils.angleDiff(a, aTo) * 0.04f;
-            //aSin += underground ? 0.1f * Mathf.Sin(time) : 0;
+            else
+            {
+                var posTo = target ? target.transform.position : PlayerScript.S.transform.position;// (positions.Count > 0 ? positions[0] : transform.position);// PlayerScript.S.transform.position;
+                aTo = Mathf.Atan2(posTo.z - transform.position.z, posTo.x - transform.position.x);
+                a += Utils.angleDiff(a, aTo) * 0.04f;
+                //aSin += underground ? 0.1f * Mathf.Sin(time) : 0;
+            }
 
             for (int i = 0; i < mandibles.Count; i++)
             {
@@ -84,7 +90,7 @@ public class Worm : MonoBehaviour {
                 mandibles[i].transform.localEulerAngles = new Vector3((mandibleAngleMin + (mandibleAngleMax - mandibleAngleMin) * nsin + 360) % 360, mandibles[i].transform.localEulerAngles.y, mandibles[i].transform.localEulerAngles.z);
             }
 
-            var screenShakeTriggerY = 5 * transform.localScale.x;
+            /*var screenShakeTriggerY = 5 * transform.localScale.x;
             var screenShakeDistanceMax = 1000;
             if (transform.position.y < screenShakeTriggerY && positions.Count > 0 && positions[positions.Count - 1].y >= screenShakeTriggerY)
             {
@@ -92,18 +98,25 @@ public class Worm : MonoBehaviour {
                 var _t = _n * _n * 2;
                 ScreenShake.Shake(_t);
                 GetComponent<AudioSource>().Play();
-            }
+            }*/
 
             rb.useGravity = !underground;
             
             rb.velocity = new Vector3(
                 Mathf.Cos(a + aSin) * groundSpeed,
-                underground ? 0 : rb.velocity.y,//rb.velocity.y + (underground ? (GetEpicenter(transform.position).Value.point - transform.position).y / 100f : 0),//underground ? rb.velocity.y + airSpeed : 0,//
+                underground ? rb.velocity.y/2f : rb.velocity.y,//rb.velocity.y + (underground ? (GetEpicenter(transform.position).Value.point - transform.position).y / 100f : 0),//underground ? rb.velocity.y + airSpeed : 0,//
                 Mathf.Sin(a + aSin) * groundSpeed
             );
 
             if(underground)
                 transform.position = GetEpicenter(transform.position).Value.point;
+            if (rb.velocity.sqrMagnitude > 1)
+            {
+                var rot = new Quaternion(head.transform.rotation.x, head.transform.rotation.y, head.transform.rotation.z, head.transform.rotation.w);
+                head.transform.LookAt(head.transform.position + rb.velocity);// (positions.Count > 0 ? transform.position - positions[positions.Count - 1] : rb.velocity));
+                head.transform.Rotate(new Vector3(0, 90, 90));
+                head.transform.rotation = Quaternion.Slerp(rot, head.transform.rotation, 0.1f);
+            }
             positions.Add(transform.position);
 
             float startOffset = 0.1f;
