@@ -9,7 +9,8 @@ public class Worm : MonoBehaviour {
     public float mandibleAngleMin = -80;
     public float mandibleAngleMax = 20;
 
-    public int nBodyParts = 10;
+    public int nBodyPartsToCreate = 10;
+    public int nBodyParts { get { return bodyParts.Count; } }
     public GameObject bodyPartPrefab;
     public List<GameObject> bodyParts;
 
@@ -22,17 +23,18 @@ public class Worm : MonoBehaviour {
     public float time = 0;
 
     public GameObject target;
-
-    private float yGround;
-    public bool underground {  get { return transform.position.y < yGround; } }
+    public GameObject explosionPrefab;
+    
+    public bool underground {  get { return transform.position.y < GetEpicenter(transform.position).Value.point.y; } }
     private bool undergroundLast = false;
 
     public List<Vector3> positions;
 
+    private float health = 100;
+
 	// Use this for initialization
 	void Start () {
         a = aTo = Mathf.PI;// transform.localEulerAngles.y;
-        yGround = 0;/// transform.position.y;
         foreach (Transform t0 in transform)
         {
             if (t0.name == "Head")
@@ -46,67 +48,93 @@ public class Worm : MonoBehaviour {
                 }
             }
         }
-        for(int i = 0; i < nBodyParts; i++)
+        for(int i = 0; i < nBodyPartsToCreate; i++)
         {
             bodyParts.Add(Instantiate<GameObject>(bodyPartPrefab));
-            bodyParts[i].transform.position = transform.position;
-            bodyParts[i].transform.localScale = new Vector3(10, 10, 10) * Filter(i * 1.0f / (nBodyParts - 1)) * transform.localScale.x;
+            bodyParts[i].transform.SetParent(transform);
+            bodyParts[i].transform.localPosition = Vector3.zero;
+            bodyParts[i].transform.localScale = new Vector3(10, 10, 10) * Filter(i * 1.0f / (nBodyPartsToCreate - 1));
         }
     }
 	
 	// Update is called once per frame
 	void Update () {
-        time += Time.deltaTime;
 
-
-        var rb = GetComponent<Rigidbody>();
-
-        if (rb.velocity.sqrMagnitude > 1)
+        if (health > 0)
         {
-            head.transform.LookAt(head.transform.position + rb.velocity);
-            head.transform.Rotate(new Vector3(0, 90, 90));
+            time += Time.deltaTime;
+
+
+            var rb = GetComponent<Rigidbody>();
+
+            if (rb.velocity.sqrMagnitude > 1)
+            {
+                head.transform.LookAt(head.transform.position + rb.velocity);
+                head.transform.Rotate(new Vector3(0, 90, 90));
+            }
+
+            var posTo = target ? target.transform.position : (positions.Count > 0 ? positions[0] : transform.position);// PlayerScript.S.transform.position;
+            aTo = Mathf.Atan2(posTo.z - transform.position.z, posTo.x - transform.position.x);
+            a += Utils.angleDiff(a, aTo) * 0.04f;
+            //aSin += underground ? 0.1f * Mathf.Sin(time) : 0;
+
+            for (int i = 0; i < mandibles.Count; i++)
+            {
+                var nsin = (Mathf.Sin(time * 4 + 0.5f * Mathf.Sin(i % (mandibles.Count / 2)) * 2 * Mathf.PI / (mandibles.Count / 2)) + 1) / 2;
+                mandibles[i].transform.localEulerAngles = new Vector3((mandibleAngleMin + (mandibleAngleMax - mandibleAngleMin) * nsin + 360) % 360, mandibles[i].transform.localEulerAngles.y, mandibles[i].transform.localEulerAngles.z);
+            }
+
+            var screenShakeTriggerY = 5 * transform.localScale.x;
+            var screenShakeDistanceMax = 1000;
+            if (transform.position.y < screenShakeTriggerY && positions.Count > 0 && positions[positions.Count - 1].y >= screenShakeTriggerY)
+            {
+                var _n = Mathf.Max(0, 1 - (transform.position - PlayerScript.S.transform.position).magnitude / screenShakeDistanceMax);
+                var _t = _n * _n * 2;
+                ScreenShake.Shake(_t);
+                GetComponent<AudioSource>().Play();
+            }
+
+            rb.useGravity = !underground;
+            
+            rb.velocity = new Vector3(
+                Mathf.Cos(a + aSin) * groundSpeed,
+                underground ? 0 : rb.velocity.y,//rb.velocity.y + (underground ? (GetEpicenter(transform.position).Value.point - transform.position).y / 100f : 0),//underground ? rb.velocity.y + airSpeed : 0,//
+                Mathf.Sin(a + aSin) * groundSpeed
+            );
+
+            if(underground)
+                transform.position = GetEpicenter(transform.position).Value.point;
+            positions.Add(transform.position);
+
+            float startOffset = 0.1f;
+            float stretchMult = 0.6f;
+            float bodyLength = 100 * transform.localScale.x;
+            while (GetPathLength() > bodyLength)
+                positions.RemoveAt(0);
+            float bodyPercent = bodyLength / GetPathLength();
+            for (int i = 0; i < nBodyParts; i++)
+            {
+                var n = i * 1.0f / (nBodyParts - 1);
+                n = 1 - Defilter(1 - n);
+                bodyParts[i].transform.position = GetPositionAlongPath(1 - n * bodyPercent * stretchMult - startOffset);
+            }
         }
-
-        var posTo = target.transform.position;// PlayerScript.S.transform.position;
-        aTo = Mathf.Atan2(posTo.z - transform.position.z, posTo.x - transform.position.x);
-        a += Utils.angleDiff(a, aTo) * 0.005f;
-        //aSin += underground ? 0.1f * Mathf.Sin(time) : 0;
-
-        for (int i = 0; i < mandibles.Count; i++)
+        else
         {
-            var nsin = (Mathf.Sin(time * 4 + 0.5f * Mathf.Sin(i  % (mandibles.Count / 2)) * 2 * Mathf.PI / (mandibles.Count / 2)) + 1) / 2;
-            mandibles[i].transform.localEulerAngles = new Vector3((mandibleAngleMin + (mandibleAngleMax - mandibleAngleMin) * nsin + 360) % 360, mandibles[i].transform.localEulerAngles.y, mandibles[i].transform.localEulerAngles.z);
-        }
+            GetComponent<Rigidbody>().isKinematic = true;
+            GameObject o;
+            if (bodyParts.Count > 0)
+                o = bodyParts[bodyParts.Count - 1];
+            else
+                o = gameObject;
 
-        var screenShakeTriggerY = 5 * transform.localScale.x;
-        var screenShakeDistanceMax = 1000;
-        if (transform.position.y < screenShakeTriggerY && positions.Count > 0 && positions[positions.Count-1].y >= screenShakeTriggerY)
-        {
-            var _n = Mathf.Max(0, 1 - (transform.position - PlayerScript.S.transform.position).magnitude / screenShakeDistanceMax);
-            var _t = _n * _n * 2;
-            ScreenShake.Shake(_t);
-            GetComponent<AudioSource>().Play();
-        }
+            var explosion = Instantiate<GameObject>(explosionPrefab);
+            explosion.transform.position = o.transform.position;
+            explosion.transform.localScale = o.transform.lossyScale * 0.25f;
 
-        rb.useGravity = !underground;
-        rb.velocity = new Vector3(
-            Mathf.Cos(a + aSin) * groundSpeed,
-            Mathf.Cos(time * frequencyMult) * airSpeed,//underground ? rb.velocity.y + airSpeed : 0,//
-            Mathf.Sin(a + aSin) * groundSpeed
-        );
-        positions.Add(transform.position);
-
-        float startOffset = 0.1f;
-        float stretchMult = 0.6f;
-        float bodyLength = 100 * transform.localScale.x;
-        while (GetPathLength() > bodyLength)
-            positions.RemoveAt(0);
-        float bodyPercent = bodyLength / GetPathLength();
-        for (int i = 0; i < nBodyParts; i++)
-        {
-            var n = i * 1.0f / (nBodyParts - 1);
-            n = 1 - Defilter(1-n);
-            bodyParts[i].transform.position = GetPositionAlongPath(1 - n * bodyPercent * stretchMult - startOffset);
+            if (o != gameObject)
+                bodyParts.Remove(o);
+            Destroy(o);
         }
         /*for(int i = 0; i < positions.Count-1; i++)
         {
@@ -115,6 +143,30 @@ public class Worm : MonoBehaviour {
         }*/
 
         undergroundLast = underground;
+    }
+
+    public RaycastHit? GetEpicenter(Vector3 pos)
+    {
+        const int distance = 1000000;
+        var direction = Vector3.down;
+        var origin = transform.position - direction * distance / 2;
+
+        RaycastHit hitInfo;
+        LayerMask layerGround = 1 << 12;
+        if (Physics.Raycast(origin, direction, out hitInfo, distance, layerGround))
+            return hitInfo;
+        return null;
+    }
+
+    //g is the object that hit the worm
+    //c is the collider that was hit ON the worm
+    //damage is the amount of damage the hit will do
+    public void Hit(GameObject g=null, Collider c=null, float damage=-1)
+    {
+        health -= damage < 0 ? health : damage;
+
+        
+
     }
 
     float Filter(float t)
