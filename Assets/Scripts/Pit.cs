@@ -70,7 +70,7 @@ public class Pit : MonoBehaviour {
                     var o = Instantiate<GameObject>(wormPrefab);
                     worms.Add(o);
                     o.transform.position = transform.position;
-                    o.GetComponent<Rigidbody>().velocity = new Vector3(0, 15, 0);
+                    o.GetComponent<Rigidbody>().velocity = transform.rotation * new Vector3(0, 20, 0);
                     createdWormThisOpening = true;
                 }
 
