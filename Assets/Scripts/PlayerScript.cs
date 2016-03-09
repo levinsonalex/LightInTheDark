@@ -5,7 +5,10 @@ public class PlayerScript : MonoBehaviour {
 
     public float speed = 5f;
     public GameObject mainCamera;
+
+    public GameObject curWeapon;
     public GameObject sword;
+    public GameObject forceOrb;
 
     public GameObject nearPedestal;
     public GameObject droppedEye;
@@ -33,6 +36,9 @@ public class PlayerScript : MonoBehaviour {
 
 	public Rigidbody bulletPrefab;
 	public Transform bowTransform;
+
+    public float forceOrbResetTime = 3f;
+    private float forceOrbCooldownTime;
 
     // Use this for initialization
     void Start () {
@@ -90,9 +96,16 @@ public class PlayerScript : MonoBehaviour {
             speed /= 2;
         }
 
-		// Weapon-related update functions
-        SwordInput();
-		BowInput();
+	// Weapon-related update functions
+        if (curWeapon == sword)
+        {
+            SwordInput();
+        }
+        else if(curWeapon == forceOrb)
+        {
+            ForceOrbInput();
+        }
+	BowInput();
     }
 	
 	// Update is called once per frame
@@ -168,6 +181,31 @@ public class PlayerScript : MonoBehaviour {
 				}
 				break;
 		}
+    }
+
+    void ForceOrbInput()
+    {
+        if(Time.time - forceOrbCooldownTime > forceOrbResetTime && Input.GetMouseButton(0))
+        {
+            Debug.Log("Explode");
+            forceOrbCooldownTime = Time.time;
+            forceOrb.transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+            //Workaround for weird bug
+            forceOrb.transform.GetChild(0).GetComponent<ParticleSystem>().startLifetime = forceOrb.transform.GetChild(0).GetComponent<ParticleSystem>().startLifetime;
+
+            GameObject[] wormList = GameObject.FindGameObjectsWithTag("Pushable");
+            foreach (GameObject worm in wormList)
+            {
+                if(worm.transform.parent == null && Vector3.Distance(transform.position, worm.transform.position) < 20f)
+                {
+                    worm.GetComponent<Rigidbody>().AddExplosionForce(100, transform.position, 10, 2, ForceMode.Impulse);
+                }
+            }
+        } 
+        else
+        {
+
+        }
     }
 
     void SwordInput()
