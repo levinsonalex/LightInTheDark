@@ -20,16 +20,20 @@ public class Sword : MonoBehaviour {
         {
             if (c.gameObject.tag == "Worm")
             {
-                Worm o = c.gameObject.GetComponent<Worm>();
-                if (o == null)
+                if (c.gameObject.transform.parent)
                 {
-                    // I have no idea what is going on here. The collider clearly has a gameobject
-                    // attached with the name "Worm". Each worm gameobject clearly has a "Worm"
-                    // script component. And yet, this message will print.
-                    Debug.Log("Somehow the worm object is null");
-                }
-                else {
-                    o.Hit(gameObject);
+                    Worm o = c.gameObject.transform.parent.GetComponent<Worm>();
+                    if (o == null)
+                    {
+
+                        // I have no idea what is going on here. The collider clearly has a gameobject
+                        // attached with the name "Worm". Each worm gameobject clearly has a "Worm"
+                        // script component. And yet, this message will print.
+                        Debug.Log("Somehow the worm object is null");
+                    }
+                    else {
+                        o.Hit(gameObject);
+                    }
                 }
             }
             else if(c.gameObject.tag == "SpawnerMandible")

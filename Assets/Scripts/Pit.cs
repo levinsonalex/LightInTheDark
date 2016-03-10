@@ -17,7 +17,7 @@ public class Pit : MonoBehaviour {
     private bool createdWormThisOpening = false;
 
     public List<GameObject> worms;
-    private int numWorms = 3;
+    private int numWorms = 5;
 
     private float time = 0;
 
@@ -69,8 +69,8 @@ public class Pit : MonoBehaviour {
                 {
                     var o = Instantiate<GameObject>(wormPrefab);
                     worms.Add(o);
-                    o.transform.position = transform.position;
-                    o.GetComponent<Rigidbody>().velocity = transform.rotation * new Vector3(0, 20, 0);
+                    o.transform.position = transform.position + transform.rotation * Vector3.up;
+                    o.GetComponent<Rigidbody>().velocity = transform.rotation * new Vector3(0, 15, 0) + Vector3.up * 10;
                     createdWormThisOpening = true;
                 }
 
