@@ -38,8 +38,8 @@ public class PlayerScript : MonoBehaviour {
     private Vector3 normalLocalRotation;
 
     [Header("Bow Variables")]
-    public Rigidbody bulletPrefab;
-	public Transform bowTransform;
+    public GameObject arrowPrefab;
+    public float arrowSpeed = 15f;
 
     [Header("ForceOrb Variables")]
     public float forceOrbResetTime = 3f;
@@ -60,7 +60,7 @@ public class PlayerScript : MonoBehaviour {
 
         normalLocalRotation = sword.transform.localEulerAngles;
 
-        hasRedPowerUp = false;
+        hasRedPowerUp = true;
         hasGreenPowerUp = false;
         hasBluePowerUp = false;
 
@@ -120,10 +120,15 @@ public class PlayerScript : MonoBehaviour {
         }
         else if (Input.GetKeyDown(KeyCode.Alpha1))
         {
+            
             curWeapon = sword;
             sword.SetActive(true);
             forceOrb.SetActive(false);
             bow.SetActive(false);
+
+            hasRedPowerUp = true;
+            hasBluePowerUp = false;
+            hasGreenPowerUp = false;
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
@@ -131,6 +136,10 @@ public class PlayerScript : MonoBehaviour {
             sword.SetActive(false);
             forceOrb.SetActive(true);
             bow.SetActive(false);
+
+            hasRedPowerUp = false;
+            hasBluePowerUp = true;
+            hasGreenPowerUp = false;
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
@@ -138,6 +147,10 @@ public class PlayerScript : MonoBehaviour {
             sword.SetActive(false);
             forceOrb.SetActive(false);
             bow.SetActive(true);
+
+            hasRedPowerUp = false;
+            hasBluePowerUp = false;
+            hasGreenPowerUp = true;
         }
 
 
@@ -293,16 +306,12 @@ public class PlayerScript : MonoBehaviour {
     }
 
 	void BowInput() {
-		// NOTE: If I attach a BulletPrefab as a child of PlayerBody, it flies up as soon as the game starts.
-		// No idea why this is happening.
-		if (bowTransform && Input.GetMouseButtonUp (0)) {
-			//Transform cam = mainCamera.transform;
+		if (Input.GetMouseButtonUp(0)) {
 			Debug.Log ("Shooting from bow");
-			// Presumably this also creates the game object
-			Rigidbody bulletInstance;
-			bulletInstance = Instantiate (bulletPrefab, bowTransform.position, Quaternion.identity) as Rigidbody;
-			bulletInstance.GetComponent<Bullet> ().initialPos = bulletInstance.gameObject.transform.position;
-			bulletInstance.velocity = Vector3.forward * 10;
-		}
+            GameObject arrow = Instantiate(arrowPrefab, arrowPrefab.transform.position, arrowPrefab.transform.rotation) as GameObject;
+            Vector3 motion = mainCamera.transform.TransformDirection(new Vector3(0, 0, 1 * arrowSpeed));
+            arrow.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
+            arrow.GetComponent<Rigidbody>().velocity = motion;
+        }
 	}
 }
