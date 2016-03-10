@@ -57,12 +57,12 @@ public class PlayerScript : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        //// Spawn in the correct spot
-        //if (SpawnPoints.S.prevRoom != 0) {
-        //    transform.position = SpawnPoints.S.spawnPoints[SpawnPoints.S.prevRoom];
-        //    transform.rotation = (SpawnPoints.S.prevRoom == 1) ?
-        //        Quaternion.Euler(0f, 90f, 0f) : Quaternion.Euler(0f, -90f, 0f);
-        //}
+        // Spawn in the correct spot
+        if (SpawnPoints.S.prevRoom != 0) {
+            transform.position = SpawnPoints.S.spawnPoints[SpawnPoints.S.prevRoom];
+            transform.rotation = (SpawnPoints.S.prevRoom == 1) ?
+                Quaternion.Euler(0f, 90f, 0f) : Quaternion.Euler(0f, -90f, 0f);
+        }
 
         normalLocalRotation = sword.transform.localEulerAngles;
 
