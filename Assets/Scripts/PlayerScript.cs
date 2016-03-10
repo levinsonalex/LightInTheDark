@@ -4,7 +4,7 @@ using System.Collections;
 public class PlayerScript : MonoBehaviour {
 
     public float speed = 5f;
-    private float curSpeed = 5f;
+    private float curSpeed;
     public GameObject mainCamera;
 
     public GameObject curWeapon;
@@ -66,6 +66,8 @@ public class PlayerScript : MonoBehaviour {
         hasRedPowerUp = true;
         hasGreenPowerUp = false;
         hasBluePowerUp = false;
+
+        curSpeed = speed;
 
         // Audio
         if (GetComponents<AudioSource>().Length > 1)
@@ -183,8 +185,8 @@ public class PlayerScript : MonoBehaviour {
         return Physics.Raycast(transform.position, Vector3.down, 2 + GetComponent<CapsuleCollider>().height, 1 << 12);
     }
 
-// Update is called once per frame
-void FixedUpdate () {
+    // Update is called once per frame
+    void FixedUpdate () {
         if (rb)
         {
             //Regular Movement
@@ -201,7 +203,7 @@ void FixedUpdate () {
                 //Moves in foward direction relative to camera.
                 Vector3 motion = rb.velocity + cameraFlat.transform.TransformDirection(new Vector3(horizontalMovement, 0, forwardMovement));
                 Vector3 diff = motion - Vector3.up * motion.y;
-                rb.velocity = diff.normalized * Mathf.Min(diff.magnitude, speed * 2) + Vector3.up * motion.y;
+                rb.velocity = diff.normalized * Mathf.Min(diff.magnitude, curSpeed) + Vector3.up * motion.y;
 
                 //No one will ever see the workaround. I've destroyed it.
                 Destroy(cameraFlat);
