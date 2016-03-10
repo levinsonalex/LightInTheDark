@@ -8,7 +8,12 @@ public class ActionButtonScript : MonoBehaviour {
     public GameObject worm;
 
     void Start() {
-        worm.SetActive(false);
+        try {
+            worm.SetActive(false);
+        }
+        catch {
+            // do nothing
+        }
     }
 
 	// Update is called once per frame
