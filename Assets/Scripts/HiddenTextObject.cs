@@ -22,17 +22,19 @@ public class HiddenTextObject : MonoBehaviour {
 
 	void Update()
 	{
-		// If light is pointing at the cube (?)
+        // If light is pointing at the cube (?)
+        PlayerScript player = PlayerScript.S.GetComponent<PlayerScript>();
 		if (tfLight
 		    && pedestalCamGameObject.activeSelf
-			&& PlayerScript.S.GetComponent<PlayerScript> ().hasRedPowerUp
+            && player.hasRedPowerUp
 			&& redMaterialIndex != -1) {
 			GetComponent<Renderer> ().materials [redMaterialIndex].SetVector ("_LightPos", tfLight.position);
 			GetComponent<Renderer> ().materials [redMaterialIndex].SetVector ("_LightDir", tfLight.forward);
 		}
 		if (tfLight
 			&& pedestalCamGameObject.activeSelf
-			&& PlayerScript.S.GetComponent<PlayerScript>().hasGreenPowerUp
+			&& player.hasGreenPowerUp
+            && player.bow == null
 			&& greenMaterialIndex != -1)
 		{
 			GetComponent<Renderer>().materials[greenMaterialIndex].SetVector("_LightPos", tfLight.position);
@@ -40,7 +42,8 @@ public class HiddenTextObject : MonoBehaviour {
 		}
 		if (tfLight
 			&& pedestalCamGameObject.activeSelf
-			&& PlayerScript.S.GetComponent<PlayerScript>().hasBluePowerUp
+			&& player.hasBluePowerUp
+            && player.forceOrb == null
 			&& blueMaterialIndex != -1)
 		{
 			GetComponent<Renderer>().materials[blueMaterialIndex].SetVector("_LightPos", tfLight.position);

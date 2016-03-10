@@ -4,10 +4,11 @@ using UnityEngine.SceneManagement;
 
 public class ActionButtonScript : MonoBehaviour {
 
-	public static bool endGame = false;
+	public static bool endGame;
     public GameObject worm;
 
     void Start() {
+        endGame = false;
         try {
             worm.SetActive(false);
         }
@@ -39,8 +40,8 @@ public class ActionButtonScript : MonoBehaviour {
         worm.SetActive(true);
         worm.GetComponent<Worm>().enabled = true;
         worm.GetComponent<Worm>().target = PlayerScript.S.gameObject;
-        worm.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 20f);
-        Invoke("GameOver", 1.1f);
+        worm.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 95f);
+        Invoke("GameOver", 1f);
     }
 
     void GameOver() {
