@@ -35,7 +35,7 @@ public class ActionButtonScript : MonoBehaviour {
         worm.GetComponent<Worm>().enabled = true;
         worm.GetComponent<Worm>().target = PlayerScript.S.gameObject;
         worm.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 20f);
-        Invoke("GameOver", 1.2f);
+        Invoke("GameOver", 1.1f);
     }
 
     void GameOver() {
