@@ -45,6 +45,8 @@ public class PlayerScript : MonoBehaviour {
     public float forceOrbResetTime = 3f;
     private float forceOrbCooldownTime;
 
+    private float JumpSpeed = 30;
+
 
     private bool lockedCursor;
 
@@ -110,6 +112,11 @@ public class PlayerScript : MonoBehaviour {
             }
         }
 
+        if(Input.GetKey(KeyCode.Space) && IsGrounded())
+        {
+            rb.velocity = new Vector3(rb.velocity.x, JumpSpeed, rb.velocity.z);
+        }
+
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             speed *= 2;
@@ -169,9 +176,14 @@ public class PlayerScript : MonoBehaviour {
             BowInput();
         }
     }
-	
-	// Update is called once per frame
-	void FixedUpdate () {
+
+    bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position, Vector3.down, 2 + GetComponent<CapsuleCollider>().height, 1 << 12);
+    }
+
+// Update is called once per frame
+void FixedUpdate () {
         if (rb)
         {
             //Regular Movement
@@ -186,8 +198,9 @@ public class PlayerScript : MonoBehaviour {
                 cameraFlat.transform.rotation = Quaternion.Euler(0, cameraFlat.transform.rotation.eulerAngles.y, cameraFlat.transform.rotation.eulerAngles.z);
 
                 //Moves in foward direction relative to camera.
-                Vector3 motion = cameraFlat.transform.TransformDirection(new Vector3(horizontalMovement, rb.velocity.y, forwardMovement));
-                rb.velocity = motion;
+                Vector3 motion = rb.velocity + cameraFlat.transform.TransformDirection(new Vector3(horizontalMovement, 0, forwardMovement));
+                Vector3 diff = motion - Vector3.up * motion.y;
+                rb.velocity = diff.normalized * Mathf.Min(diff.magnitude, speed * 2) + Vector3.up * motion.y;
 
                 //No one will ever see the workaround. I've destroyed it.
                 Destroy(cameraFlat);

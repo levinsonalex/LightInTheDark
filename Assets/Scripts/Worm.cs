@@ -26,14 +26,14 @@ public class Worm : MonoBehaviour {
     public GameObject target;
     public GameObject explosionPrefab;
     
-    public bool underground {  get { return transform.position.y < GetEpicenter(transform.position).Value.point.y; } }
+    public bool underground {  get { var epi = GetEpicenter(transform.position); if (!epi.HasValue) { Destroy(gameObject); return true; } return transform.position.y < epi.Value.point.y; } }
     private bool undergroundLast = false;
 
     public List<Vector3> positions;
 
     private float health = 100;
 
-    private float goTimer = 2f;
+    private float goTimer = 1f;
 
 	// Use this for initialization
 	void Start () {
@@ -78,7 +78,8 @@ public class Worm : MonoBehaviour {
             }
             else
             {
-                var posTo = target ? target.transform.position : PlayerScript.S.transform.position;// (positions.Count > 0 ? positions[0] : transform.position);// PlayerScript.S.transform.position;
+                var rand = Random.insideUnitSphere;
+                var posTo = target ? target.transform.position : (SeePlayer() ? PlayerScript.S.transform.position : (positions.Count > 0 ? positions[0] + (rand - Vector3.Project(rand, Vector3.up)) * 50 : transform.position));// PlayerScript.S.transform.position;
                 aTo = Mathf.Atan2(posTo.z - transform.position.z, posTo.x - transform.position.x);
                 a += Utils.angleDiff(a, aTo) * 0.04f;
                 //aSin += underground ? 0.1f * Mathf.Sin(time) : 0;
@@ -101,15 +102,29 @@ public class Worm : MonoBehaviour {
             }*/
 
             rb.useGravity = !underground;
-            
-            rb.velocity = new Vector3(
-                Mathf.Cos(a + aSin) * groundSpeed,
-                underground ? rb.velocity.y/2f : rb.velocity.y,//rb.velocity.y + (underground ? (GetEpicenter(transform.position).Value.point - transform.position).y / 100f : 0),//underground ? rb.velocity.y + airSpeed : 0,//
-                Mathf.Sin(a + aSin) * groundSpeed
-            );
+            var xz = groundSpeed * new Vector3(Mathf.Cos(a + aSin), 0, Mathf.Sin(a + aSin));
+            var y = Vector3.up * (underground ? rb.velocity.y / 2f : rb.velocity.y);
 
-            if(underground)
-                transform.position = GetEpicenter(transform.position).Value.point;
+            if (goTimer <= 0)
+            {
+                rb.velocity = xz + y;
+            }
+            else
+            {
+                rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z) + y;
+            }
+
+            var epi = GetEpicenter(transform.position);
+            if(!epi.HasValue)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            var epi_diff = epi.Value.point - transform.position;
+            if (underground && epi_diff.sqrMagnitude > 4)
+            {
+                transform.position += epi_diff.normalized * Time.deltaTime * 4;
+            }
             if (rb.velocity.sqrMagnitude > 1)
             {
                 var rot = new Quaternion(head.transform.rotation.x, head.transform.rotation.y, head.transform.rotation.z, head.transform.rotation.w);
@@ -158,15 +173,21 @@ public class Worm : MonoBehaviour {
         undergroundLast = underground;
     }
 
+    public bool SeePlayer()
+    {
+        var pos = transform.position + Vector3.up * 5;
+        var diff = PlayerScript.S.transform.position - pos;
+        return !Physics.Raycast(pos, diff, diff.magnitude, 1 << 12);
+    }
+
     public RaycastHit? GetEpicenter(Vector3 pos)
     {
         const int distance = 1000000;
-        var direction = Vector3.down;
-        var origin = transform.position - direction * distance / 2;
+        var origin = new Vector3(transform.position.x, distance, transform.position.z);
 
         RaycastHit hitInfo;
         LayerMask layerGround = 1 << 12;
-        if (Physics.Raycast(origin, direction, out hitInfo, distance, layerGround))
+        if (Physics.Raycast(origin, Vector3.down, out hitInfo, distance, layerGround))
             return hitInfo;
         return null;
     }
