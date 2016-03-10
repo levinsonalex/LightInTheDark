@@ -53,7 +53,7 @@ public class HiddenTextObject : MonoBehaviour {
 		if (!tfLight || !pedestalCamGameObject.activeSelf)
 		{
 			// Assumes default material is first in array
-			for (int i = 0; i < GetComponent<Renderer> ().materials.Length-1; ++i) {
+			for (int i = 0; i < GetComponent<Renderer> ().materials.Length; ++i) {
 				//print (GetComponent<Renderer> ().materials [i].name);
 				GetComponent<Renderer>().materials[i].SetVector("_LightPos", tfLight.position);
 				GetComponent<Renderer>().materials[i].SetVector("_LightDir", Vector3.down);
