@@ -73,6 +73,9 @@ public class PlayerScript : MonoBehaviour {
         hasGreenPowerUp = false;
         hasBluePowerUp = false;
 
+        if (!SpawnPoints.S.playerHasOrb) forceOrb = null;
+        if (!SpawnPoints.S.playerHasBow) bow = null;
+
 		health = 10;
 
         curSpeed = speed;
@@ -120,6 +123,7 @@ public class PlayerScript : MonoBehaviour {
                     GameObject bowDrop = Instantiate(bow, new Vector3(279, 5, 243.5f), Quaternion.identity) as GameObject;
                     bowDrop.SetActive(true);
                     bow = null;
+                    SpawnPoints.S.playerHasBow = false;
                     nearPedestal.GetComponent<PedestalScript>().AB.SetActive(false);
                     nearPedestal.GetComponent<PedestalScript>().AB = null;
                     nearPedestal.transform.FindChild("PedestalLight").gameObject.SetActive(true);
@@ -129,6 +133,7 @@ public class PlayerScript : MonoBehaviour {
                     GameObject forceOrbDrop = Instantiate(forceOrb, new Vector3(440, 5, 400), Quaternion.identity) as GameObject;
                     forceOrbDrop.SetActive(true);
                     forceOrb = null;
+                    SpawnPoints.S.playerHasOrb = false;
                     nearPedestal.GetComponent<PedestalScript>().AB.SetActive(false);
                     nearPedestal.GetComponent<PedestalScript>().AB = null;
                     nearPedestal.transform.FindChild("PedestalLight").gameObject.SetActive(true);
