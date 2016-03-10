@@ -128,35 +128,35 @@ public class PlayerScript : MonoBehaviour {
         {
             curSpeed = speed;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha1))
+        else if (Input.GetKeyDown(KeyCode.Alpha1) && sword)
         {
             
             curWeapon = sword;
-            sword.SetActive(true);
-            forceOrb.SetActive(false);
-            bow.SetActive(false);
+            if (sword) sword.SetActive(true);
+            if (forceOrb) forceOrb.SetActive(false);
+            if (bow) bow.SetActive(false);
 
             hasRedPowerUp = true;
             hasBluePowerUp = false;
             hasGreenPowerUp = false;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        else if (Input.GetKeyDown(KeyCode.Alpha2) && forceOrb)
         {
             curWeapon = forceOrb;
-            sword.SetActive(false);
-            forceOrb.SetActive(true);
-            bow.SetActive(false);
+            if(sword) sword.SetActive(false);
+            if(forceOrb) forceOrb.SetActive(true);
+            if(bow) bow.SetActive(false);
 
             hasRedPowerUp = false;
             hasBluePowerUp = true;
             hasGreenPowerUp = false;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        else if (Input.GetKeyDown(KeyCode.Alpha3) && bow)
         {
             curWeapon = bow;
-            sword.SetActive(false);
-            forceOrb.SetActive(false);
-            bow.SetActive(true);
+            if (sword) sword.SetActive(false);
+            if (forceOrb) forceOrb.SetActive(false);
+            if (bow) bow.SetActive(true);
 
             hasRedPowerUp = false;
             hasBluePowerUp = false;
