@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class ActionButtonScript : MonoBehaviour {
 
@@ -34,5 +35,10 @@ public class ActionButtonScript : MonoBehaviour {
         worm.GetComponent<Worm>().enabled = true;
         worm.GetComponent<Worm>().target = PlayerScript.S.gameObject;
         worm.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 20f);
+        Invoke("GameOver", 1.2f);
+    }
+
+    void GameOver() {
+        SceneManager.LoadScene("GameOver");
     }
 }
