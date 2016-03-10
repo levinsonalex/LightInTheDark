@@ -96,8 +96,10 @@ public class PlayerScript : MonoBehaviour {
     {
         if (ActionButtonScript.endGame) return;
 
-        if (Input.GetKeyDown("escape"))
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
             Screen.lockCursor = lockedCursor = !lockedCursor;
+        }
 
         if (Input.GetKeyDown(KeyCode.E) && nearPedestal)
         {
@@ -108,15 +110,38 @@ public class PlayerScript : MonoBehaviour {
             Debug.Log("Pressed E Nearby A Pedestal");
             if (!droppedEye)
             {
-                droppedEye = nearPedestal.transform.FindChild("PedestalCamera").gameObject;
-                droppedEye.SetActive(true);
-                mainCamera.SetActive(false);
+                if (bow && nearPedestal.name == "LeftRoomPedestal")
+                {
+                    GameObject bowDrop = Instantiate(bow, new Vector3(279, 5, 243.5f), Quaternion.identity) as GameObject;
+                    bowDrop.SetActive(true);
+                    bow = null;
+                    nearPedestal.GetComponent<PedestalScript>().AB.SetActive(false);
+                    nearPedestal.GetComponent<PedestalScript>().AB = null;
+                    nearPedestal.transform.FindChild("PedestalCamera").gameObject.SetActive(true);
+                }
+                else if (forceOrb && nearPedestal.name == "RightRoomPedestal")
+                {
+                    GameObject forceOrbDrop = Instantiate(forceOrb, new Vector3(440, 5, 400), Quaternion.identity) as GameObject;
+                    forceOrbDrop.SetActive(true);
+                    forceOrb = null;
+                    nearPedestal.GetComponent<PedestalScript>().AB.SetActive(false);
+                    nearPedestal.GetComponent<PedestalScript>().AB = null;
+                    nearPedestal.transform.FindChild("PedestalCamera").gameObject.SetActive(true);
+                }
+                else if (nearPedestal.name == "Pedestal")
+                {
+                    droppedEye = nearPedestal.transform.FindChild("PedestalCamera").gameObject;
+                    droppedEye.SetActive(true);
+                    mainCamera.SetActive(false);
+                }
             }
             else
             {
-                mainCamera.SetActive(true);
-                droppedEye.SetActive(false);
-                droppedEye = null;
+                if (nearPedestal.name == "Pedestal") { 
+                    mainCamera.SetActive(true);
+                    droppedEye.SetActive(false);
+                    droppedEye = null;
+                }
             }
         }
 
@@ -133,35 +158,35 @@ public class PlayerScript : MonoBehaviour {
         {
             curSpeed = speed;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha1))
+        else if (Input.GetKeyDown(KeyCode.Alpha1) && sword)
         {
             
             curWeapon = sword;
-            sword.SetActive(true);
-            forceOrb.SetActive(false);
-            bow.SetActive(false);
+            if (sword) sword.SetActive(true);
+            if (forceOrb) forceOrb.SetActive(false);
+            if (bow) bow.SetActive(false);
 
             hasRedPowerUp = true;
             hasBluePowerUp = false;
             hasGreenPowerUp = false;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        else if (Input.GetKeyDown(KeyCode.Alpha2) && forceOrb)
         {
             curWeapon = forceOrb;
-            sword.SetActive(false);
-            forceOrb.SetActive(true);
-            bow.SetActive(false);
+            if(sword) sword.SetActive(false);
+            if(forceOrb) forceOrb.SetActive(true);
+            if(bow) bow.SetActive(false);
 
             hasRedPowerUp = false;
             hasBluePowerUp = true;
             hasGreenPowerUp = false;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        else if (Input.GetKeyDown(KeyCode.Alpha3) && bow)
         {
             curWeapon = bow;
-            sword.SetActive(false);
-            forceOrb.SetActive(false);
-            bow.SetActive(true);
+            if (sword) sword.SetActive(false);
+            if (forceOrb) forceOrb.SetActive(false);
+            if (bow) bow.SetActive(true);
 
             hasRedPowerUp = false;
             hasBluePowerUp = false;

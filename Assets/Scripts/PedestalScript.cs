@@ -22,7 +22,10 @@ public class PedestalScript : MonoBehaviour {
         }
         else
         {
-            AB.SetActive(false);
+            if (AB)
+            {
+                AB.SetActive(false);
+            }
         }
 	}
 }
