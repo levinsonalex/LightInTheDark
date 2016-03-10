@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerScript : MonoBehaviour {
 
     public float speed = 5f;
+    private float curSpeed = 5f;
     public GameObject mainCamera;
 
     public GameObject curWeapon;
@@ -112,11 +113,11 @@ public class PlayerScript : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            speed *= 2;
+            curSpeed = 2 * speed;
         }
         else if(Input.GetKeyUp(KeyCode.LeftShift))
         {
-            speed /= 2;
+            curSpeed = speed;
         }
         else if (Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -177,8 +178,8 @@ public class PlayerScript : MonoBehaviour {
             //Regular Movement
             if (!droppedEye)
             { 
-                float forwardMovement = Input.GetAxis("Vertical") * speed;
-                float horizontalMovement = Input.GetAxis("Horizontal") * speed;
+                float forwardMovement = Input.GetAxis("Vertical") * curSpeed;
+                float horizontalMovement = Input.GetAxis("Horizontal") * curSpeed;
 
                 //Dumb workaround to let me set the rotation to ground level only.
                 GameObject cameraFlat = new GameObject("TEMP");
