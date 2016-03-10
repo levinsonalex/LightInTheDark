@@ -1,11 +1,14 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour {
 
     public float speed = 5f;
     private float curSpeed;
     public GameObject mainCamera;
+
+	int health;
 
     public GameObject curWeapon;
     public GameObject sword;
@@ -69,6 +72,8 @@ public class PlayerScript : MonoBehaviour {
         hasRedPowerUp = true;
         hasGreenPowerUp = false;
         hasBluePowerUp = false;
+
+		health = 10;
 
         curSpeed = speed;
 
@@ -273,30 +278,38 @@ public class PlayerScript : MonoBehaviour {
 
 	void OnCollisionEnter(Collision coll) {
 		switch (coll.collider.tag) {
-			case "RedPowerUp":
-				audiosrc.PlayOneShot (powerupsound, 3f);
-				Debug.Log ("Player encountered a red power-up!");
-				hasRedPowerUp = true;
-				coll.gameObject.SetActive(false); // Don't destoy; it causes issues.
-				break;
-			case "GreenPowerUp":
-				audiosrc.PlayOneShot (powerupsound, 3f);
-				Debug.Log ("Player encountered a green power-up!");
-				hasGreenPowerUp = true;
-				coll.gameObject.SetActive(false);
-				break;
-			case "BluePowerUp":
-				audiosrc.PlayOneShot (powerupsound, 3f);
-				Debug.Log ("Player encountered a blue power-up!");
-				hasBluePowerUp = true;
-				coll.gameObject.SetActive(false);
-				break;
-			default:
-				if (coll.collider.tag != "Untagged")
-				{
-					Debug.Log("Unidentified collision: " + coll.collider.tag);
-				}
-				break;
+		case "RedPowerUp":
+			audiosrc.PlayOneShot (powerupsound, 3f);
+			Debug.Log ("Player encountered a red power-up!");
+			hasRedPowerUp = true;
+			coll.gameObject.SetActive(false); // Don't destoy; it causes issues.
+			break;
+		case "GreenPowerUp":
+			audiosrc.PlayOneShot (powerupsound, 3f);
+			Debug.Log ("Player encountered a green power-up!");
+			hasGreenPowerUp = true;
+			coll.gameObject.SetActive(false);
+			break;
+		case "BluePowerUp":
+			audiosrc.PlayOneShot (powerupsound, 3f);
+			Debug.Log ("Player encountered a blue power-up!");
+			hasBluePowerUp = true;
+			coll.gameObject.SetActive(false);
+			break;
+
+		case "Worm":
+			Debug.Log ("Player encountered a worm!");
+			health -= 1;
+			if (health <= 0) {
+				SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
+			}
+			break;
+		default:
+			if (coll.collider.tag != "Untagged")
+			{
+				Debug.Log("Unidentified collision: " + coll.collider.tag);
+			}
+			break;
 		}
     }
 
