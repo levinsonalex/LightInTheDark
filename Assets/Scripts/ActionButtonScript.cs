@@ -3,17 +3,36 @@ using System.Collections;
 
 public class ActionButtonScript : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
+	public static bool endGame = false;
+    public GameObject worm;
+
+    void Start() {
+        worm.SetActive(false);
+    }
+
 	// Update is called once per frame
 	void Update () {
-        if (PlayerScript.S.GetComponent<PlayerScript>().mainCamera.activeSelf)
+        PlayerScript player = PlayerScript.S.GetComponent<PlayerScript>();
+        if (player.mainCamera.activeSelf)
         {
             transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward,
                Camera.main.transform.rotation * Vector3.up);
         }
+        // Begin end game scene
+        else if (!player.mainCamera.activeSelf && (player.forceOrb == null) && (player.bow == null) && SpawnPoints.S.curRoom == 0) {
+            player.mainCamera.SetActive(true);
+            player.droppedEye.SetActive(false);
+            player.droppedEye = null;
+            EndGame();
+        }
+    }
+
+    // Initiate end "cutscene"
+    void EndGame() {
+        endGame = true;
+        worm.SetActive(true);
+        worm.GetComponent<Worm>().enabled = true;
+        worm.GetComponent<Worm>().target = PlayerScript.S.gameObject;
+        worm.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 20f);
     }
 }

@@ -12,6 +12,9 @@ public class PlayerScript : MonoBehaviour {
     public GameObject forceOrb;
     public GameObject bow;
 
+    // End game variables
+    public int endRotation = 180;
+    public int curRotation = 0;
 
     public GameObject nearPedestal;
     public GameObject droppedEye;
@@ -91,6 +94,8 @@ public class PlayerScript : MonoBehaviour {
 
     void Update()
     {
+        if (ActionButtonScript.endGame) return;
+
         if (Input.GetKeyDown("escape"))
             Screen.lockCursor = lockedCursor = !lockedCursor;
 
@@ -187,7 +192,16 @@ public class PlayerScript : MonoBehaviour {
 
     // Update is called once per frame
     void FixedUpdate () {
-        if (rb)
+        // Spin
+        if (ActionButtonScript.endGame) {
+            if (curRotation <= endRotation) {
+                curRotation += (int)(endRotation * Time.deltaTime);
+                transform.Rotate(0f, endRotation * Time.deltaTime, 0f);
+            }
+            return;
+        }
+
+        else if (rb)
         {
             //Regular Movement
             if (!droppedEye)
