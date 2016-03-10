@@ -6,7 +6,6 @@ public class HiddenTextObject : MonoBehaviour {
 
 	Transform tfLight;
 	public GameObject pedestalCamGameObject;
-	public GameObject player;
 	public int redMaterialIndex;
 	public int greenMaterialIndex;
 	public int blueMaterialIndex;
@@ -19,9 +18,6 @@ public class HiddenTextObject : MonoBehaviour {
 		{
 			tfLight = pedestalCamGameObject.transform;
 		}
-		if (!player) {
-			player = GameObject.Find ("PlayerBody");
-		}
 	}
 
 	void Update()
@@ -29,14 +25,14 @@ public class HiddenTextObject : MonoBehaviour {
 		// If light is pointing at the cube (?)
 		if (tfLight
 		    && pedestalCamGameObject.activeSelf
-			&& player.GetComponent<PlayerScript> ().hasRedPowerUp
+			&& PlayerScript.S.GetComponent<PlayerScript> ().hasRedPowerUp
 			&& redMaterialIndex != -1) {
 			GetComponent<Renderer> ().materials [redMaterialIndex].SetVector ("_LightPos", tfLight.position);
 			GetComponent<Renderer> ().materials [redMaterialIndex].SetVector ("_LightDir", tfLight.forward);
 		}
 		if (tfLight
 			&& pedestalCamGameObject.activeSelf
-			&& player.GetComponent<PlayerScript>().hasGreenPowerUp
+			&& PlayerScript.S.GetComponent<PlayerScript>().hasGreenPowerUp
 			&& greenMaterialIndex != -1)
 		{
 			GetComponent<Renderer>().materials[greenMaterialIndex].SetVector("_LightPos", tfLight.position);
@@ -44,7 +40,7 @@ public class HiddenTextObject : MonoBehaviour {
 		}
 		if (tfLight
 			&& pedestalCamGameObject.activeSelf
-			&& player.GetComponent<PlayerScript>().hasBluePowerUp
+			&& PlayerScript.S.GetComponent<PlayerScript>().hasBluePowerUp
 			&& blueMaterialIndex != -1)
 		{
 			GetComponent<Renderer>().materials[blueMaterialIndex].SetVector("_LightPos", tfLight.position);

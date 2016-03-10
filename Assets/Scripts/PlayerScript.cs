@@ -112,7 +112,7 @@ public class PlayerScript : MonoBehaviour {
                     bow = null;
                     nearPedestal.GetComponent<PedestalScript>().AB.SetActive(false);
                     nearPedestal.GetComponent<PedestalScript>().AB = null;
-                    nearPedestal.transform.FindChild("PedestalCamera").gameObject.SetActive(true);
+                    nearPedestal.transform.FindChild("PedestalLight").gameObject.SetActive(true);
                 }
                 else if (forceOrb && nearPedestal.name == "RightRoomPedestal")
                 {
@@ -121,7 +121,7 @@ public class PlayerScript : MonoBehaviour {
                     forceOrb = null;
                     nearPedestal.GetComponent<PedestalScript>().AB.SetActive(false);
                     nearPedestal.GetComponent<PedestalScript>().AB = null;
-                    nearPedestal.transform.FindChild("PedestalCamera").gameObject.SetActive(true);
+                    nearPedestal.transform.FindChild("PedestalLight").gameObject.SetActive(true);
                 }
                 else if (nearPedestal.name == "Pedestal")
                 {
