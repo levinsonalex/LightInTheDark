@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
@@ -38,13 +38,15 @@ public class ActionButtonScript : MonoBehaviour {
     void EndGame() {
         endGame = true;
         worm.SetActive(true);
+        Worm.endWorm = worm;
+        worm.GetComponent<Worm>().end = true;
         worm.GetComponent<Worm>().enabled = true;
         worm.GetComponent<Worm>().target = PlayerScript.S.gameObject;
-        worm.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 95f);
-        Invoke("GameOver", 1f);
+        worm.GetComponent<Rigidbody>().velocity = new Vector3(0f, 120f, -40f);
+        //Invoke("GameOver", 5f);
     }
 
-    void GameOver() {
+    public static void GameOver() {
         SceneManager.LoadScene("GameOver");
     }
 }

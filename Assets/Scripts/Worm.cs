@@ -35,6 +35,9 @@ public class Worm : MonoBehaviour {
 
     private float goTimer = 1f;
 
+    public bool end = false;
+    public static GameObject endWorm;
+
 	// Use this for initialization
 	void Start () {
         groundSpeed = 0;
@@ -64,6 +67,20 @@ public class Worm : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        if (end)
+        {
+            if (transform.position.y < 0)
+                ActionButtonScript.GameOver();
+
+            foreach(Transform t in transform)
+            {
+                if(t.GetComponent<Collider>())
+                {
+                    t.GetComponent<Collider>().isTrigger = true;
+                }
+            }
+        }
+
         if (health > 0)
         {
             time += Time.deltaTime;
@@ -76,7 +93,7 @@ public class Worm : MonoBehaviour {
             {
                 goTimer -= Time.deltaTime;
             }
-            else
+            else if(!end)
             {
                 var rand = Random.insideUnitSphere;
                 var posTo = target ? target.transform.position : (SeePlayer() ? PlayerScript.S.transform.position : (positions.Count > 0 ? positions[0] + (rand - Vector3.Project(rand, Vector3.up)) * 50 : transform.position));// PlayerScript.S.transform.position;
@@ -88,7 +105,8 @@ public class Worm : MonoBehaviour {
             for (int i = 0; i < mandibles.Count; i++)
             {
                 var nsin = (Mathf.Sin(time * 4 + 0.5f * Mathf.Sin(i % (mandibles.Count / 2)) * 2 * Mathf.PI / (mandibles.Count / 2)) + 1) / 2;
-                mandibles[i].transform.localEulerAngles = new Vector3((mandibleAngleMin + (mandibleAngleMax - mandibleAngleMin) * nsin + 360) % 360, mandibles[i].transform.localEulerAngles.y, mandibles[i].transform.localEulerAngles.z);
+                var ang = end ? ((mandibleAngleMax - mandibleAngleMin) * (rb.velocity.y / 120f + 1) + mandibleAngleMin) : (mandibleAngleMin + (mandibleAngleMax - mandibleAngleMin) * nsin + 360) % 360;
+                mandibles[i].transform.localEulerAngles = new Vector3(ang, mandibles[i].transform.localEulerAngles.y, mandibles[i].transform.localEulerAngles.z);
             }
 
             /*var screenShakeTriggerY = 5 * transform.localScale.x;
@@ -101,11 +119,16 @@ public class Worm : MonoBehaviour {
                 GetComponent<AudioSource>().Play();
             }*/
 
-            rb.useGravity = !underground;
+            rb.useGravity = end || !underground;
             var xz = groundSpeed * new Vector3(Mathf.Cos(a + aSin), 0, Mathf.Sin(a + aSin));
             var y = Vector3.up * (underground ? rb.velocity.y / 2f : rb.velocity.y);
 
-            if (goTimer <= 0)
+            if (end)
+            {
+                //rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y - 10 * Time.deltaTime, rb.velocity.z);
+                //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z) + y;
+            }
+            else if (goTimer <= 0)
             {
                 rb.velocity = xz + y;
             }

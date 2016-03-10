@@ -229,10 +229,12 @@ public class PlayerScript : MonoBehaviour {
     void FixedUpdate () {
         // Spin
         if (ActionButtonScript.endGame) {
+            Camera.main.transform.LookAt(Worm.endWorm.transform.position);
+            /*
             if (curRotation <= endRotation) {
                 curRotation += (int)(endRotation * Time.deltaTime);
                 transform.Rotate(0f, endRotation * Time.deltaTime, 0f);
-            }
+            }*/
             return;
         }
 
