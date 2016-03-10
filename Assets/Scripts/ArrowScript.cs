@@ -15,4 +15,32 @@ public class ArrowScript : MonoBehaviour {
             Destroy(gameObject);
         }
 	}
+
+    void OnCollisionEnter(Collision c)
+    {
+        if (c.gameObject.tag == "Worm")
+        {
+            Worm o = c.transform.parent.gameObject.GetComponent<Worm>();
+            if (o == null)
+            {
+                // I have no idea what is going on here. The collider clearly has a gameobject
+                // attached with the name "Worm". Each worm gameobject clearly has a "Worm"
+                // script component. And yet, this message will print.
+                Debug.Log("Somehow the worm object is null");
+            }
+            else
+            {
+                o.Hit(gameObject);
+            }
+        }
+        else if (c.gameObject.tag == "SpawnerMandible")
+        {
+            c.gameObject.GetComponent<SpawnerMandible>().Hit();
+        }
+
+        if (c.gameObject.name != "PlayerBody")
+        {
+            Destroy(gameObject);
+        }
+    }
 }

@@ -313,6 +313,7 @@ public class PlayerScript : MonoBehaviour {
             Vector3 motion = mainCamera.transform.TransformDirection(new Vector3(0, 0, 1 * arrowSpeed));
             arrow.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
             arrow.GetComponent<Rigidbody>().velocity = motion;
+            arrow.GetComponent<BoxCollider>().isTrigger = false;
         }
 	}
 }
