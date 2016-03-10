@@ -37,6 +37,7 @@ public class ArrowScript : MonoBehaviour {
         {
             c.gameObject.GetComponent<SpawnerMandible>().Hit();
         }
+        Debug.Log(c.gameObject.name);
 
         if (c.gameObject.name != "PlayerBody")
         {
