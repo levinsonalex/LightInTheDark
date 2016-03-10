@@ -29,13 +29,8 @@ public class SideRoomTextObjects : MonoBehaviour
         // Default
         if (!tfLight || !pedestalCamGameObject.activeSelf)
         {
-            // Assumes default material is first in array
-            for (int i = 0; i < GetComponent<Renderer>().materials.Length - 1; ++i)
-            {
-                //print (GetComponent<Renderer> ().materials [i].name);
-                GetComponent<Renderer>().materials[i].SetVector("_LightPos", tfLight.position);
-                GetComponent<Renderer>().materials[i].SetVector("_LightDir", Vector3.down);
-            }
+            GetComponent<Renderer>().materials[1].SetVector("_LightPos", tfLight.position);
+            GetComponent<Renderer>().materials[1].SetVector("_LightDir", Vector3.down);
         }
     }
 }
