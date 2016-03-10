@@ -118,8 +118,31 @@ public class PlayerScript : MonoBehaviour {
         {
             speed /= 2;
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            curWeapon = sword;
+            sword.SetActive(true);
+            forceOrb.SetActive(false);
+            bow.SetActive(false);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            curWeapon = forceOrb;
+            sword.SetActive(false);
+            forceOrb.SetActive(true);
+            bow.SetActive(false);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            curWeapon = bow;
+            sword.SetActive(false);
+            forceOrb.SetActive(false);
+            bow.SetActive(true);
+        }
 
-	// Weapon-related update functions
+
+
+        // Weapon-related update functions
         if (curWeapon == sword)
         {
             SwordInput();
