@@ -54,7 +54,6 @@ public class PlayerScript : MonoBehaviour {
 
     private float JumpSpeed = 30;
 
-
     private bool lockedCursor;
 
     // Use this for initialization
