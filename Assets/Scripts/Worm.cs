@@ -144,9 +144,12 @@ public class Worm : MonoBehaviour {
                 return;
             }
             var epi_diff = epi.Value.point - transform.position;
-            if (underground && epi_diff.sqrMagnitude > 4)
+            if (underground)
             {
-                transform.position += epi_diff.normalized * Time.deltaTime * 4;
+                if(epi_diff.sqrMagnitude > 2)
+                {
+                    transform.position += epi_diff.normalized * Time.deltaTime * 4;
+                }
             }
             if (rb.velocity.sqrMagnitude > 1)
             {

@@ -159,7 +159,7 @@ public class PlayerScript : MonoBehaviour {
             rb.velocity = new Vector3(rb.velocity.x, JumpSpeed, rb.velocity.z);
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        /*if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             curSpeed = 2 * speed;
         }
@@ -167,7 +167,7 @@ public class PlayerScript : MonoBehaviour {
         {
             curSpeed = speed;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha1) && sword)
+        else*/ if (Input.GetKeyDown(KeyCode.Alpha1) && sword)
         {
             
             curWeapon = sword;
