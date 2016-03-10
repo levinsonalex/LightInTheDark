@@ -9,6 +9,8 @@ public class PlayerScript : MonoBehaviour {
     public GameObject curWeapon;
     public GameObject sword;
     public GameObject forceOrb;
+    public GameObject bow;
+
 
     public GameObject nearPedestal;
     public GameObject droppedEye;
@@ -23,6 +25,7 @@ public class PlayerScript : MonoBehaviour {
 	public AudioClip powerupsound;
 	AudioSource audiosrc;
 
+    [Header("Sword Variables")]
     public float swordAngleMin;
     public float swordAngleMax;
     public float swordAngleReady;
@@ -34,23 +37,26 @@ public class PlayerScript : MonoBehaviour {
     public bool swinging = false;
     private Vector3 normalLocalRotation;
 
-	public Rigidbody bulletPrefab;
+    [Header("Bow Variables")]
+    public Rigidbody bulletPrefab;
 	public Transform bowTransform;
 
+    [Header("ForceOrb Variables")]
     public float forceOrbResetTime = 3f;
     private float forceOrbCooldownTime;
+
 
     private bool lockedCursor;
 
     // Use this for initialization
     void Start()
     {
-        // Spawn in the correct spot
-        if (SpawnPoints.S.prevRoom != 0) {
-            transform.position = SpawnPoints.S.spawnPoints[SpawnPoints.S.prevRoom];
-            transform.rotation = (SpawnPoints.S.prevRoom == 1) ?
-                Quaternion.Euler(0f, 90f, 0f) : Quaternion.Euler(0f, -90f, 0f);
-        }
+        //// Spawn in the correct spot
+        //if (SpawnPoints.S.prevRoom != 0) {
+        //    transform.position = SpawnPoints.S.spawnPoints[SpawnPoints.S.prevRoom];
+        //    transform.rotation = (SpawnPoints.S.prevRoom == 1) ?
+        //        Quaternion.Euler(0f, 90f, 0f) : Quaternion.Euler(0f, -90f, 0f);
+        //}
 
         normalLocalRotation = sword.transform.localEulerAngles;
 
@@ -122,7 +128,10 @@ public class PlayerScript : MonoBehaviour {
         {
             ForceOrbInput();
         }
-	BowInput();
+        else if(curWeapon == bow)
+        {
+            BowInput();
+        }
     }
 	
 	// Update is called once per frame
@@ -210,7 +219,7 @@ public class PlayerScript : MonoBehaviour {
             //Workaround for weird bug
             forceOrb.transform.GetChild(0).GetComponent<ParticleSystem>().startLifetime = forceOrb.transform.GetChild(0).GetComponent<ParticleSystem>().startLifetime;
 
-            GameObject[] wormList = GameObject.FindGameObjectsWithTag("Pushable");
+            GameObject[] wormList = GameObject.FindGameObjectsWithTag("Worm");
             foreach (GameObject worm in wormList)
             {
                 if(worm.transform.parent == null && Vector3.Distance(transform.position, worm.transform.position) < 20f)
